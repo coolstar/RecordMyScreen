@@ -8,6 +8,7 @@
 
 #import "CSAppDelegate.h"
 #import "CSRecordViewController.h"
+#import "CSRecordingListViewController.h"
 
 @implementation CSAppDelegate
 
@@ -22,12 +23,17 @@
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
-    UIViewController *recordVC;
+    UINavigationController *savedNavVC;
+    UIViewController *recordVC,*savedVC;
 
     recordVC = [[[CSRecordViewController alloc] initWithNibName:@"CSRecordViewController" bundle:nil] autorelease];
     
+    savedVC = [[[CSRecordingListViewController alloc] init] autorelease];
+    savedNavVC = [[[UINavigationController alloc] initWithRootViewController:savedVC] autorelease];
+    savedNavVC.navigationBar.barStyle = UIBarStyleBlack;
+    
     self.tabBarController = [[[UITabBarController alloc] init] autorelease];
-    self.tabBarController.viewControllers = @[recordVC];
+    self.tabBarController.viewControllers = @[recordVC,savedNavVC];
     self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
     return YES;

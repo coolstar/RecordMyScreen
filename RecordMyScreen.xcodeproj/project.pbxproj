@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		382758E21690DEAA000D537C /* video.png in Resources */ = {isa = PBXBuildFile; fileRef = 382758E01690DEAA000D537C /* video.png */; };
+		382758E31690DEAA000D537C /* video@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 382758E11690DEAA000D537C /* video@2x.png */; };
+		382758E71690E0EE000D537C /* CSRecordingListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 382758E61690E0EE000D537C /* CSRecordingListViewController.m */; };
+		382758EA1690E745000D537C /* side_top.png in Resources */ = {isa = PBXBuildFile; fileRef = 382758E81690E745000D537C /* side_top.png */; };
+		382758EB1690E745000D537C /* side_top@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 382758E91690E745000D537C /* side_top@2x.png */; };
+		382758ED1690EDC8000D537C /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 382758EC1690EDC8000D537C /* Default-568h@2x.png */; };
+		382758EF1690EF45000D537C /* lens.png in Resources */ = {isa = PBXBuildFile; fileRef = 382758EE1690EF45000D537C /* lens.png */; };
 		389BCCFA169010CF00877CA5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389BCCF9169010CF00877CA5 /* UIKit.framework */; };
 		389BCCFC169010CF00877CA5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389BCCFB169010CF00877CA5 /* Foundation.framework */; };
 		389BCCFE169010CF00877CA5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389BCCFD169010CF00877CA5 /* CoreGraphics.framework */; };
@@ -18,6 +25,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		382758E01690DEAA000D537C /* video.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = video.png; sourceTree = "<group>"; };
+		382758E11690DEAA000D537C /* video@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "video@2x.png"; sourceTree = "<group>"; };
+		382758E51690E0EE000D537C /* CSRecordingListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRecordingListViewController.h; sourceTree = "<group>"; };
+		382758E61690E0EE000D537C /* CSRecordingListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRecordingListViewController.m; sourceTree = "<group>"; };
+		382758E81690E745000D537C /* side_top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = side_top.png; sourceTree = "<group>"; };
+		382758E91690E745000D537C /* side_top@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "side_top@2x.png"; sourceTree = "<group>"; };
+		382758EC1690EDC8000D537C /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		382758EE1690EF45000D537C /* lens.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lens.png; sourceTree = "<group>"; };
 		389BCCF5169010CF00877CA5 /* RecordMyScreen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecordMyScreen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		389BCCF9169010CF00877CA5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		389BCCFB169010CF00877CA5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -47,9 +62,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		382758E41690E0A7000D537C /* CSRecordingListController */ = {
+			isa = PBXGroup;
+			children = (
+				382758E51690E0EE000D537C /* CSRecordingListViewController.h */,
+				382758E61690E0EE000D537C /* CSRecordingListViewController.m */,
+			);
+			name = CSRecordingListController;
+			sourceTree = "<group>";
+		};
 		389BCCEA169010CF00877CA5 = {
 			isa = PBXGroup;
 			children = (
+				382758EC1690EDC8000D537C /* Default-568h@2x.png */,
 				389BCCFF169010CF00877CA5 /* RecordMyScreen */,
 				389BCCF8169010CF00877CA5 /* Frameworks */,
 				389BCCF6169010CF00877CA5 /* Products */,
@@ -78,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				389BCD2A169010FB00877CA5 /* CSRecordViewController */,
+				382758E41690E0A7000D537C /* CSRecordingListController */,
 				389BCD08169010CF00877CA5 /* CSAppDelegate.h */,
 				389BCD09169010CF00877CA5 /* CSAppDelegate.m */,
 				389BCD00169010CF00877CA5 /* Supporting Files */,
@@ -88,6 +114,11 @@
 		389BCD00169010CF00877CA5 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				382758EE1690EF45000D537C /* lens.png */,
+				382758E81690E745000D537C /* side_top.png */,
+				382758E91690E745000D537C /* side_top@2x.png */,
+				382758E01690DEAA000D537C /* video.png */,
+				382758E11690DEAA000D537C /* video@2x.png */,
 				389BCD01169010CF00877CA5 /* RecordMyScreen-Info.plist */,
 				389BCD02169010CF00877CA5 /* InfoPlist.strings */,
 				389BCD05169010CF00877CA5 /* main.m */,
@@ -160,6 +191,12 @@
 			files = (
 				389BCD04169010CF00877CA5 /* InfoPlist.strings in Resources */,
 				389BCD2F1690113900877CA5 /* CSRecordViewController.xib in Resources */,
+				382758E21690DEAA000D537C /* video.png in Resources */,
+				382758E31690DEAA000D537C /* video@2x.png in Resources */,
+				382758EA1690E745000D537C /* side_top.png in Resources */,
+				382758EB1690E745000D537C /* side_top@2x.png in Resources */,
+				382758ED1690EDC8000D537C /* Default-568h@2x.png in Resources */,
+				382758EF1690EF45000D537C /* lens.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -173,6 +210,7 @@
 				389BCD06169010CF00877CA5 /* main.m in Sources */,
 				389BCD0A169010CF00877CA5 /* CSAppDelegate.m in Sources */,
 				389BCD2E1690113900877CA5 /* CSRecordViewController.m in Sources */,
+				382758E71690E0EE000D537C /* CSRecordingListViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
