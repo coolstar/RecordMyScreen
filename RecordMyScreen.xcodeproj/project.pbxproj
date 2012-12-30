@@ -1,0 +1,287 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		389BCCFA169010CF00877CA5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389BCCF9169010CF00877CA5 /* UIKit.framework */; };
+		389BCCFC169010CF00877CA5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389BCCFB169010CF00877CA5 /* Foundation.framework */; };
+		389BCCFE169010CF00877CA5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389BCCFD169010CF00877CA5 /* CoreGraphics.framework */; };
+		389BCD04169010CF00877CA5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 389BCD02169010CF00877CA5 /* InfoPlist.strings */; };
+		389BCD06169010CF00877CA5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 389BCD05169010CF00877CA5 /* main.m */; };
+		389BCD0A169010CF00877CA5 /* CSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 389BCD09169010CF00877CA5 /* CSAppDelegate.m */; };
+		389BCD2E1690113900877CA5 /* CSRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 389BCD2C1690113900877CA5 /* CSRecordViewController.m */; };
+		389BCD2F1690113900877CA5 /* CSRecordViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 389BCD2D1690113900877CA5 /* CSRecordViewController.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		389BCCF5169010CF00877CA5 /* RecordMyScreen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecordMyScreen.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		389BCCF9169010CF00877CA5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		389BCCFB169010CF00877CA5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		389BCCFD169010CF00877CA5 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		389BCD01169010CF00877CA5 /* RecordMyScreen-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RecordMyScreen-Info.plist"; sourceTree = "<group>"; };
+		389BCD03169010CF00877CA5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		389BCD05169010CF00877CA5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		389BCD07169010CF00877CA5 /* RecordMyScreen-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecordMyScreen-Prefix.pch"; sourceTree = "<group>"; };
+		389BCD08169010CF00877CA5 /* CSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CSAppDelegate.h; sourceTree = "<group>"; };
+		389BCD09169010CF00877CA5 /* CSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CSAppDelegate.m; sourceTree = "<group>"; };
+		389BCD2B1690113900877CA5 /* CSRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRecordViewController.h; sourceTree = "<group>"; };
+		389BCD2C1690113900877CA5 /* CSRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRecordViewController.m; sourceTree = "<group>"; };
+		389BCD2D1690113900877CA5 /* CSRecordViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CSRecordViewController.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		389BCCF2169010CF00877CA5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				389BCCFA169010CF00877CA5 /* UIKit.framework in Frameworks */,
+				389BCCFC169010CF00877CA5 /* Foundation.framework in Frameworks */,
+				389BCCFE169010CF00877CA5 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		389BCCEA169010CF00877CA5 = {
+			isa = PBXGroup;
+			children = (
+				389BCCFF169010CF00877CA5 /* RecordMyScreen */,
+				389BCCF8169010CF00877CA5 /* Frameworks */,
+				389BCCF6169010CF00877CA5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		389BCCF6169010CF00877CA5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				389BCCF5169010CF00877CA5 /* RecordMyScreen.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		389BCCF8169010CF00877CA5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				389BCCF9169010CF00877CA5 /* UIKit.framework */,
+				389BCCFB169010CF00877CA5 /* Foundation.framework */,
+				389BCCFD169010CF00877CA5 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		389BCCFF169010CF00877CA5 /* RecordMyScreen */ = {
+			isa = PBXGroup;
+			children = (
+				389BCD2A169010FB00877CA5 /* CSRecordViewController */,
+				389BCD08169010CF00877CA5 /* CSAppDelegate.h */,
+				389BCD09169010CF00877CA5 /* CSAppDelegate.m */,
+				389BCD00169010CF00877CA5 /* Supporting Files */,
+			);
+			path = RecordMyScreen;
+			sourceTree = "<group>";
+		};
+		389BCD00169010CF00877CA5 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				389BCD01169010CF00877CA5 /* RecordMyScreen-Info.plist */,
+				389BCD02169010CF00877CA5 /* InfoPlist.strings */,
+				389BCD05169010CF00877CA5 /* main.m */,
+				389BCD07169010CF00877CA5 /* RecordMyScreen-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		389BCD2A169010FB00877CA5 /* CSRecordViewController */ = {
+			isa = PBXGroup;
+			children = (
+				389BCD2B1690113900877CA5 /* CSRecordViewController.h */,
+				389BCD2C1690113900877CA5 /* CSRecordViewController.m */,
+				389BCD2D1690113900877CA5 /* CSRecordViewController.xib */,
+			);
+			name = CSRecordViewController;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		389BCCF4169010CF00877CA5 /* RecordMyScreen */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 389BCD27169010CF00877CA5 /* Build configuration list for PBXNativeTarget "RecordMyScreen" */;
+			buildPhases = (
+				389BCCF1169010CF00877CA5 /* Sources */,
+				389BCCF2169010CF00877CA5 /* Frameworks */,
+				389BCCF3169010CF00877CA5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RecordMyScreen;
+			productName = RecordMyScreen;
+			productReference = 389BCCF5169010CF00877CA5 /* RecordMyScreen.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		389BCCEC169010CF00877CA5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = CS;
+				LastUpgradeCheck = 0440;
+				ORGANIZATIONNAME = "CoolStar Organization";
+			};
+			buildConfigurationList = 389BCCEF169010CF00877CA5 /* Build configuration list for PBXProject "RecordMyScreen" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 389BCCEA169010CF00877CA5;
+			productRefGroup = 389BCCF6169010CF00877CA5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				389BCCF4169010CF00877CA5 /* RecordMyScreen */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		389BCCF3169010CF00877CA5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				389BCD04169010CF00877CA5 /* InfoPlist.strings in Resources */,
+				389BCD2F1690113900877CA5 /* CSRecordViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		389BCCF1169010CF00877CA5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				389BCD06169010CF00877CA5 /* main.m in Sources */,
+				389BCD0A169010CF00877CA5 /* CSAppDelegate.m in Sources */,
+				389BCD2E1690113900877CA5 /* CSRecordViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		389BCD02169010CF00877CA5 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				389BCD03169010CF00877CA5 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		389BCD25169010CF00877CA5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		389BCD26169010CF00877CA5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		389BCD28169010CF00877CA5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "RecordMyScreen/RecordMyScreen-Prefix.pch";
+				INFOPLIST_FILE = "RecordMyScreen/RecordMyScreen-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		389BCD29169010CF00877CA5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "RecordMyScreen/RecordMyScreen-Prefix.pch";
+				INFOPLIST_FILE = "RecordMyScreen/RecordMyScreen-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		389BCCEF169010CF00877CA5 /* Build configuration list for PBXProject "RecordMyScreen" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				389BCD25169010CF00877CA5 /* Debug */,
+				389BCD26169010CF00877CA5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		389BCD27169010CF00877CA5 /* Build configuration list for PBXNativeTarget "RecordMyScreen" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				389BCD28169010CF00877CA5 /* Debug */,
+				389BCD29169010CF00877CA5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 389BCCEC169010CF00877CA5 /* Project object */;
+}
