@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CSRecordViewController : UIViewController
+@interface CSRecordViewController : UIViewController {
+    IBOutlet UIButton *record,*stop;
+}
 
 @end
