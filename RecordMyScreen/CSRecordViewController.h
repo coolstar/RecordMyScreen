@@ -7,12 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AVFoundation/AVFoundation.h>
 
-@interface CSRecordViewController : UIViewController {
+@interface CSRecordViewController : UIViewController <AVAudioRecorderDelegate> {
     UISegmentedControl *_record,*_stop;
     IBOutlet UIImageView *_recordbar;
+    IBOutlet UILabel *_statusLabel;
     NSTimer *_recordingTimer;
-    
+    NSTimer *_shotTimer;
+    NSDate *_recordStartDate;
+    AVAudioRecorder *_audioRecorder;
+    int shotcount;
 }
 
 @end
