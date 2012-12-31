@@ -13,8 +13,7 @@
     UISegmentedControl *_record,*_stop;
     IBOutlet UIImageView *_recordbar;
     IBOutlet UILabel *_statusLabel;
-    NSTimer *_recordingTimer;
-    NSTimer *_shotTimer;
+    NSTimer *_recordingTimer,*_shotTimer;
     NSDate *_recordStartDate;
     AVAudioRecorder *_audioRecorder;
     int shotcount;

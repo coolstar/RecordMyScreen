@@ -51,33 +51,55 @@ extern UIImage* _UICreateScreenUIImage();
 }
 
 - (void)record:(id)sender {
+    _statusLabel.text = @"00:00:00";
+    _recordStartDate = [[NSDate date] retain];
     _stop.enabled = YES;
     _record.enabled = NO;
     
     shotcount = 0;
     NSDictionary *audioSettings = @{
-        AVFormatIDKey : [NSNumber numberWithInt:kAudioFormatLinearPCM],
-        AVNumberOfChannelsKey : [NSNumber numberWithInt:2],
-        AVSampleRateKey : [NSNumber numberWithFloat:44100.0f],
-        AVLinearPCMBitDepthKey : [NSNumber numberWithInt:16],
-        AVLinearPCMIsBigEndianKey : [NSNumber numberWithBool:NO],
-        AVLinearPCMIsFloatKey : [NSNumber numberWithBool:NO]
+        AVNumberOfChannelsKey : [NSNumber numberWithInt:2]
     };
     NSError *error = nil;
-    NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/audio.wav"];
+    NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/audio.caf"];
     _audioRecorder = [[AVAudioRecorder alloc] initWithURL:[NSURL fileURLWithPath:path] settings:audioSettings error:&error];
     [_audioRecorder setDelegate:self];
     [_audioRecorder prepareToRecord];
     [_audioRecorder record];
+    
+    _recordingTimer = [NSTimer scheduledTimerWithTimeInterval:1
+                                                       target:self
+                                                     selector:@selector(updateTimer:)
+                                                     userInfo:nil
+                                                      repeats:YES];
+    
 }
 
 - (void)stop:(id)sender {
     _stop.enabled = NO;
     _record.enabled = YES;
     
+    [_recordingTimer invalidate];
+    _recordingTimer = nil;
+    
+    _statusLabel.text = @"Finishing...";
     [_audioRecorder stop];
     [_audioRecorder release];
+    [_recordStartDate release];
     _audioRecorder = nil;
+    _statusLabel.text = @"Ready";
+}
+
+- (void)updateTimer:(NSTimer *)timer {
+    NSDate *currentDate = [NSDate date];
+    NSTimeInterval timeInterval = [currentDate timeIntervalSinceDate:_recordStartDate];
+    NSDate *timerDate = [NSDate dateWithTimeIntervalSince1970:timeInterval];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"HH:mm:ss"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0.0]];
+    NSString *timeString=[dateFormatter stringFromDate:timerDate];
+    _statusLabel.text = timeString;
+    [dateFormatter release];
 }
 
 - (void)viewDidUnload
