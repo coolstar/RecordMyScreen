@@ -16,7 +16,12 @@
     NSTimer *_recordingTimer,*_shotTimer;
     NSDate *_recordStartDate;
     AVAudioRecorder *_audioRecorder;
+    NSString *_shotdir;
     int shotcount;
+    
+    AVAssetWriter *_videoWriter;
+    AVAssetWriterInput *_videoWriterInput;
+    AVAssetWriterInputPixelBufferAdaptor *_pixelBufferadaptor;
 }
 
 @end

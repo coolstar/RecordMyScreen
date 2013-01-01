@@ -8,7 +8,7 @@
 
 #import "CSRecordViewController.h"
 
-extern UIImage* _UICreateScreenUIImage();
+extern UIImage *_UICreateScreenUIImage();
 
 @interface CSRecordViewController ()
 
@@ -21,6 +21,7 @@ extern UIImage* _UICreateScreenUIImage();
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.tabBarItem = [[[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Record", @"") image:[UIImage imageNamed:@"video"] tag:0] autorelease];
+        _shotdir = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/shots"] retain];
         // Custom initialization
     }
     return self;
@@ -51,6 +52,9 @@ extern UIImage* _UICreateScreenUIImage();
 }
 
 - (void)record:(id)sender {
+    [[NSFileManager defaultManager] removeItemAtPath:_shotdir error:nil];
+    [[NSFileManager defaultManager] createDirectoryAtPath:_shotdir withIntermediateDirectories:YES attributes:nil error:nil];
+    
     _statusLabel.text = @"00:00:00";
     _recordStartDate = [[NSDate date] retain];
     _stop.enabled = YES;
@@ -72,22 +76,42 @@ extern UIImage* _UICreateScreenUIImage();
                                                      selector:@selector(updateTimer:)
                                                      userInfo:nil
                                                       repeats:YES];
-    
+    _shotTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f/30.0f
+                                                      target:self
+                                                    selector:@selector(grabShot:)
+                                                    userInfo:nil
+                                                     repeats:YES];
 }
 
 - (void)stop:(id)sender {
     _stop.enabled = NO;
-    _record.enabled = YES;
     
     [_recordingTimer invalidate];
     _recordingTimer = nil;
+    [_shotTimer invalidate];
+    _shotTimer = nil;
     
     _statusLabel.text = @"Finishing...";
+    shotcount-=1;
     [_audioRecorder stop];
     [_audioRecorder release];
+
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
+    dispatch_async(queue, ^{
+        CGSize size = [UIImage imageWithContentsOfFile:[_shotdir stringByAppendingString:@"/0.jpg"]].size;
+        NSDate *currentDate = [NSDate date];
+        NSTimeInterval timeInterval = [currentDate timeIntervalSinceDate:_recordStartDate];
+        [[NSFileManager defaultManager] removeItemAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] error:nil];
+        [self encodeVideotoPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] size:size duration:timeInterval];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _statusLabel.text = @"Ready";
+            _record.enabled = YES;
+        });
+    });
+    
     [_recordStartDate release];
+    _recordStartDate = nil;
     _audioRecorder = nil;
-    _statusLabel.text = @"Ready";
 }
 
 - (void)updateTimer:(NSTimer *)timer {
@@ -102,6 +126,16 @@ extern UIImage* _UICreateScreenUIImage();
     [dateFormatter release];
 }
 
+- (void)grabShot:(NSTimer *)timer {
+    UIImage *shot = _UICreateScreenUIImage();
+    int thisshot = shotcount;
+    //why encode in a separate thread? to take advantage of the 2nd core in the A5 and A5X chip.
+    NSData *data = UIImageJPEGRepresentation(shot, 1);
+    [shot release];
+    [data writeToFile:[_shotdir stringByAppendingFormat:@"/%d.jpg",thisshot] atomically:YES];
+    shotcount++;
+}
+
 - (void)viewDidUnload
 {
     [super viewDidUnload];
@@ -112,6 +146,100 @@ extern UIImage* _UICreateScreenUIImage();
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+-(void)dealloc {
+    [_shotdir release];
+    [super dealloc];
+}
+
+-(void)encodeVideotoPath:(NSString*)path size:(CGSize)size duration:(int)duration
+{
+    NSError *error = nil;
+    AVAssetWriter *videoWriter = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath:path]
+                                                           fileType:AVFileTypeMPEG4
+                                                              error:&error];
+    NSParameterAssert(videoWriter);
+    
+    NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   AVVideoCodecH264, AVVideoCodecKey,
+                                   [NSNumber numberWithFloat:size.width], AVVideoWidthKey,
+                                   [NSNumber numberWithFloat:size.height], AVVideoHeightKey,
+                                   nil];
+    AVAssetWriterInput* writerInput = [[AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
+                                                                          outputSettings:videoSettings] retain];
+    
+    AVAssetWriterInputPixelBufferAdaptor *adaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput
+                                                                                                                     sourcePixelBufferAttributes:nil];
+    NSParameterAssert(writerInput);
+    NSParameterAssert([videoWriter canAddInput:writerInput]);
+    [videoWriter addInput:writerInput];
+    
+    
+    //Start a session:
+    [videoWriter startWriting];
+    [videoWriter startSessionAtSourceTime:kCMTimeZero];
+    
+    CVPixelBufferRef buffer = NULL;
+    int i = 0;
+    buffer = [self pixelBufferFromCGImage:[[UIImage imageWithContentsOfFile:[_shotdir stringByAppendingFormat:@"/%d.jpg",i]] CGImage] size:size];
+    CVPixelBufferPoolCreatePixelBuffer (NULL, adaptor.pixelBufferPool, &buffer);
+    
+    //[adaptor appendPixelBuffer:buffer withPresentationTime:kCMTimeZero];
+    while (writerInput.readyForMoreMediaData && i < shotcount)
+    {
+        NSLog(@"inside for loop %d",i);
+            CMTime frameTime = CMTimeMake(1, 1);
+            CMTime lastTime=CMTimeMake(i, 6);
+            CMTime presentTime=CMTimeAdd(lastTime, frameTime);
+              
+            buffer = [self pixelBufferFromCGImage:[[UIImage imageWithContentsOfFile:[_shotdir stringByAppendingFormat:@"/%d.jpg",i]] CGImage] size:size];
+        
+            [adaptor appendPixelBuffer:buffer withPresentationTime:presentTime];
+            i++;
+    }
+    [writerInput markAsFinished];
+    [videoWriter finishWriting];
+    
+    CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
+    [videoWriter release];
+    [writerInput release];
+    NSLog (@"Done");
+}
+
+- (CVPixelBufferRef) pixelBufferFromCGImage:(CGImageRef)image size:(CGSize)size
+{
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
+                             [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
+                             [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey,
+                             nil];
+    CVPixelBufferRef pxbuffer = NULL;
+    CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault, size.width,
+                                          size.height, kCVPixelFormatType_32ARGB, (CFDictionaryRef) options,
+                                          &pxbuffer);
+    NSParameterAssert(status == kCVReturnSuccess && pxbuffer != NULL);
+    
+    CVPixelBufferLockBaseAddress(pxbuffer, 0);
+    void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
+    NSParameterAssert(pxdata != NULL);
+    
+    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(pxdata, size.width,
+                                                 size.height, 8, 4*size.width, rgbColorSpace,
+                                                 kCGImageAlphaNoneSkipFirst);
+    NSParameterAssert(context);
+    
+    //CGContextTranslateCTM(context, 0, CGImageGetHeight(image));
+    //CGContextScaleCTM(context, 1.0, -1.0);//Flip vertically to account for different origin
+    
+    CGContextDrawImage(context, CGRectMake(0, 0, CGImageGetWidth(image),
+                                           CGImageGetHeight(image)), image);
+    CGColorSpaceRelease(rgbColorSpace);
+    CGContextRelease(context);
+    
+    CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
+    
+    return pxbuffer;
 }
 
 @end

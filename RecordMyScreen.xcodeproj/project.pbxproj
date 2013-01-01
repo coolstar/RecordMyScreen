@@ -15,6 +15,8 @@
 		382758EF1690EF45000D537C /* lens.png in Resources */ = {isa = PBXBuildFile; fileRef = 382758EE1690EF45000D537C /* lens.png */; };
 		382758F11690F307000D537C /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 382758F01690F307000D537C /* Default-568h@2x.png */; };
 		382758F41690F43B000D537C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 382758F21690F40C000D537C /* AVFoundation.framework */; };
+		382758F91692563A000D537C /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 382758F716925634000D537C /* CoreVideo.framework */; };
+		382758FC1692565F000D537C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 382758FA16925657000D537C /* CoreMedia.framework */; };
 		389BCCFA169010CF00877CA5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389BCCF9169010CF00877CA5 /* UIKit.framework */; };
 		389BCCFC169010CF00877CA5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389BCCFB169010CF00877CA5 /* Foundation.framework */; };
 		389BCCFE169010CF00877CA5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 389BCCFD169010CF00877CA5 /* CoreGraphics.framework */; };
@@ -35,6 +37,8 @@
 		382758EE1690EF45000D537C /* lens.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lens.png; sourceTree = "<group>"; };
 		382758F01690F307000D537C /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		382758F21690F40C000D537C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		382758F716925634000D537C /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		382758FA16925657000D537C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		389BCCF5169010CF00877CA5 /* RecordMyScreen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecordMyScreen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		389BCCF9169010CF00877CA5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		389BCCFB169010CF00877CA5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -59,6 +63,8 @@
 				389BCCFA169010CF00877CA5 /* UIKit.framework in Frameworks */,
 				389BCCFC169010CF00877CA5 /* Foundation.framework in Frameworks */,
 				389BCCFE169010CF00877CA5 /* CoreGraphics.framework in Frameworks */,
+				382758FC1692565F000D537C /* CoreMedia.framework in Frameworks */,
+				382758F91692563A000D537C /* CoreVideo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,6 +100,8 @@
 		389BCCF8169010CF00877CA5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				382758FA16925657000D537C /* CoreMedia.framework */,
+				382758F716925634000D537C /* CoreVideo.framework */,
 				382758F21690F40C000D537C /* AVFoundation.framework */,
 				389BCCF9169010CF00877CA5 /* UIKit.framework */,
 				389BCCFB169010CF00877CA5 /* Foundation.framework */,
