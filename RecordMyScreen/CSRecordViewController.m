@@ -7,6 +7,8 @@
 //
 
 #import "CSRecordViewController.h"
+#import <IOMobileFrameBuffer.h>
+#import <IOSurface.h>
 
 extern UIImage *_UICreateScreenUIImage();
 
@@ -127,11 +129,58 @@ extern UIImage *_UICreateScreenUIImage();
 }
 
 - (void)grabShot:(NSTimer *)timer {
-    UIImage *shot = _UICreateScreenUIImage();
+    //UIImage *shot = _UICreateScreenUIImage();
+    
+    
+    IOMobileFramebufferConnection connect;
+    kern_return_t result;
+    CoreSurfaceBufferRef screenSurface = NULL;
+    
+    io_service_t framebufferService = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("AppleH1CLCD"));
+    if(!framebufferService)
+        framebufferService = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("AppleM2CLCD"));
+    if(!framebufferService)
+        framebufferService = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("AppleCLCD"));
+    
+    result = IOMobileFramebufferOpen(framebufferService, mach_task_self(), 0, &connect);
+    
+    result = IOMobileFramebufferGetLayerDefaultSurface(connect, 0, &screenSurface);
+    
+    uint32_t aseed;
+    IOSurfaceLock(screenSurface, kIOSurfaceLockReadOnly, &aseed);
+    uint32_t width = IOSurfaceGetWidth(screenSurface);
+    uint32_t height = IOSurfaceGetHeight(screenSurface);
+    
+    CFMutableDictionaryRef dict;
+    int pitch = width*4, size = 4*width*height;
+    int bPE=4;
+    char pixelFormat[4] = {'A','R','G','B'};
+    dict = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    CFDictionarySetValue(dict, kIOSurfaceIsGlobal, kCFBooleanTrue);
+    CFDictionarySetValue(dict, kIOSurfaceBytesPerRow, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &pitch));
+    CFDictionarySetValue(dict, kIOSurfaceBytesPerElement, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &bPE));
+    CFDictionarySetValue(dict, kIOSurfaceWidth, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &width));
+    CFDictionarySetValue(dict, kIOSurfaceHeight, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &height));
+    CFDictionarySetValue(dict, kIOSurfacePixelFormat, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, pixelFormat));
+    CFDictionarySetValue(dict, kIOSurfaceAllocSize, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &size));
+    
+    IOSurfaceRef destSurf = IOSurfaceCreate(dict);
+    CoreSurfaceAcceleratorRef outAcc;
+    CoreSurfaceAcceleratorCreate(NULL, 0, &outAcc);
+    
+    CFDictionaryRef ed = (CFDictionaryRef)[NSDictionary dictionaryWithObjectsAndKeys: nil];
+    CoreSurfaceAcceleratorTransferSurfaceWithSwap(outAcc, screenSurface, destSurf, ed);
+    
+    IOSurfaceUnlock(screenSurface, kIOSurfaceLockReadOnly, &aseed);
+    
+    CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, IOSurfaceGetBaseAddress(destSurf), (width*height*4), NULL);
+    CGImageRef cgImage=CGImageCreate(width, height, 8, 8*4, IOSurfaceGetBytesPerRow(destSurf), CGColorSpaceCreateDeviceRGB(), kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little, provider, NULL, YES, kCGRenderingIntentDefault);
+    UIImage *shot = [UIImage imageWithCGImage: cgImage];
+    CGImageRelease(cgImage);
+    
     int thisshot = shotcount;
-    //why encode in a separate thread? to take advantage of the 2nd core in the A5 and A5X chip.
     NSData *data = UIImageJPEGRepresentation(shot, 1);
-    [shot release];
+    //[shot release];
     [data writeToFile:[_shotdir stringByAppendingFormat:@"/%d.jpg",thisshot] atomically:YES];
     shotcount++;
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		38114EDD1692F83C00BE64B4 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38114EDB1692F82E00BE64B4 /* MediaPlayer.framework */; };
 		382758E21690DEAA000D537C /* video.png in Resources */ = {isa = PBXBuildFile; fileRef = 382758E01690DEAA000D537C /* video.png */; };
 		382758E31690DEAA000D537C /* video@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 382758E11690DEAA000D537C /* video@2x.png */; };
 		382758E71690E0EE000D537C /* CSRecordingListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 382758E61690E0EE000D537C /* CSRecordingListViewController.m */; };
@@ -28,6 +29,29 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		38114EC21692D88A00BE64B4 /* IOBSD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOBSD.h; sourceTree = "<group>"; };
+		38114EC31692D88A00BE64B4 /* IOCFBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOCFBundle.h; sourceTree = "<group>"; };
+		38114EC41692D88A00BE64B4 /* IOCFPlugIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOCFPlugIn.h; sourceTree = "<group>"; };
+		38114EC51692D88A00BE64B4 /* IOCFSerialize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOCFSerialize.h; sourceTree = "<group>"; };
+		38114EC61692D88A00BE64B4 /* IOCFUnserialize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOCFUnserialize.h; sourceTree = "<group>"; };
+		38114EC71692D88A00BE64B4 /* IOCFURLAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOCFURLAccess.h; sourceTree = "<group>"; };
+		38114EC81692D88A00BE64B4 /* IODataQueueClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IODataQueueClient.h; sourceTree = "<group>"; };
+		38114EC91692D88A00BE64B4 /* IODataQueueShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IODataQueueShared.h; sourceTree = "<group>"; };
+		38114ECA1692D88A00BE64B4 /* IOKitKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOKitKeys.h; sourceTree = "<group>"; };
+		38114ECB1692D88A00BE64B4 /* IOKitLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOKitLib.h; sourceTree = "<group>"; };
+		38114ECC1692D88A00BE64B4 /* iokitmig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iokitmig.h; sourceTree = "<group>"; };
+		38114ECD1692D88A00BE64B4 /* IOKitServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOKitServer.h; sourceTree = "<group>"; };
+		38114ECE1692D88A00BE64B4 /* IOMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOMessage.h; sourceTree = "<group>"; };
+		38114ECF1692D88A00BE64B4 /* IOReturn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOReturn.h; sourceTree = "<group>"; };
+		38114ED01692D88A00BE64B4 /* IOSharedLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSharedLock.h; sourceTree = "<group>"; };
+		38114ED11692D88A00BE64B4 /* IOTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOTypes.h; sourceTree = "<group>"; };
+		38114ED21692D88A00BE64B4 /* OSMessageNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSMessageNotification.h; sourceTree = "<group>"; };
+		38114ED31692D88A00BE64B4 /* IOMobileFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOMobileFrameBuffer.h; sourceTree = "<group>"; };
+		38114ED51692DA6900BE64B4 /* CoreSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreSurface.h; sourceTree = "<group>"; };
+		38114ED81692E8B000BE64B4 /* IOSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurface.h; sourceTree = "<group>"; };
+		38114ED91692E8B000BE64B4 /* IOSurfaceAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurfaceAPI.h; sourceTree = "<group>"; };
+		38114EDA1692E8B000BE64B4 /* IOSurfaceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurfaceBase.h; sourceTree = "<group>"; };
+		38114EDB1692F82E00BE64B4 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		382758E01690DEAA000D537C /* video.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = video.png; sourceTree = "<group>"; };
 		382758E11690DEAA000D537C /* video@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "video@2x.png"; sourceTree = "<group>"; };
 		382758E51690E0EE000D537C /* CSRecordingListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRecordingListViewController.h; sourceTree = "<group>"; };
@@ -65,12 +89,67 @@
 				389BCCFE169010CF00877CA5 /* CoreGraphics.framework in Frameworks */,
 				382758FC1692565F000D537C /* CoreMedia.framework in Frameworks */,
 				382758F91692563A000D537C /* CoreVideo.framework in Frameworks */,
+				38114EDD1692F83C00BE64B4 /* MediaPlayer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		38114EC01692D88A00BE64B4 /* headers */ = {
+			isa = PBXGroup;
+			children = (
+				38114ED41692DA6900BE64B4 /* CoreSurface */,
+				38114EC11692D88A00BE64B4 /* IOKit */,
+				38114ED71692E8B000BE64B4 /* IOSurface */,
+				38114ED31692D88A00BE64B4 /* IOMobileFrameBuffer.h */,
+			);
+			path = headers;
+			sourceTree = "<group>";
+		};
+		38114EC11692D88A00BE64B4 /* IOKit */ = {
+			isa = PBXGroup;
+			children = (
+				38114EC21692D88A00BE64B4 /* IOBSD.h */,
+				38114EC31692D88A00BE64B4 /* IOCFBundle.h */,
+				38114EC41692D88A00BE64B4 /* IOCFPlugIn.h */,
+				38114EC51692D88A00BE64B4 /* IOCFSerialize.h */,
+				38114EC61692D88A00BE64B4 /* IOCFUnserialize.h */,
+				38114EC71692D88A00BE64B4 /* IOCFURLAccess.h */,
+				38114EC81692D88A00BE64B4 /* IODataQueueClient.h */,
+				38114EC91692D88A00BE64B4 /* IODataQueueShared.h */,
+				38114ECA1692D88A00BE64B4 /* IOKitKeys.h */,
+				38114ECB1692D88A00BE64B4 /* IOKitLib.h */,
+				38114ECC1692D88A00BE64B4 /* iokitmig.h */,
+				38114ECD1692D88A00BE64B4 /* IOKitServer.h */,
+				38114ECE1692D88A00BE64B4 /* IOMessage.h */,
+				38114ECF1692D88A00BE64B4 /* IOReturn.h */,
+				38114ED01692D88A00BE64B4 /* IOSharedLock.h */,
+				38114ED11692D88A00BE64B4 /* IOTypes.h */,
+				38114ED21692D88A00BE64B4 /* OSMessageNotification.h */,
+			);
+			path = IOKit;
+			sourceTree = "<group>";
+		};
+		38114ED41692DA6900BE64B4 /* CoreSurface */ = {
+			isa = PBXGroup;
+			children = (
+				38114ED51692DA6900BE64B4 /* CoreSurface.h */,
+			);
+			path = CoreSurface;
+			sourceTree = "<group>";
+		};
+		38114ED71692E8B000BE64B4 /* IOSurface */ = {
+			isa = PBXGroup;
+			children = (
+				38114ED81692E8B000BE64B4 /* IOSurface.h */,
+				38114ED91692E8B000BE64B4 /* IOSurfaceAPI.h */,
+				38114EDA1692E8B000BE64B4 /* IOSurfaceBase.h */,
+			);
+			name = IOSurface;
+			path = Headers;
+			sourceTree = "<group>";
+		};
 		382758E41690E0A7000D537C /* CSRecordingListController */ = {
 			isa = PBXGroup;
 			children = (
@@ -100,6 +179,7 @@
 		389BCCF8169010CF00877CA5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				38114EDB1692F82E00BE64B4 /* MediaPlayer.framework */,
 				382758FA16925657000D537C /* CoreMedia.framework */,
 				382758F716925634000D537C /* CoreVideo.framework */,
 				382758F21690F40C000D537C /* AVFoundation.framework */,
@@ -125,6 +205,7 @@
 		389BCD00169010CF00877CA5 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				38114EC01692D88A00BE64B4 /* headers */,
 				382758F01690F307000D537C /* Default-568h@2x.png */,
 				382758EE1690EF45000D537C /* lens.png */,
 				382758E81690E745000D537C /* side_top.png */,
@@ -249,6 +330,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(SDK_DIR)/System/Library/PrivateFrameworks";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -261,7 +343,18 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "RecordMyScreen/headers/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_LDFLAGS = (
+					"-framework",
+					IOSurface,
+					"-framework",
+					CoreSurface,
+					"-framework",
+					IOMobileFramebuffer,
+					"-framework",
+					IOKit,
+				);
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -276,13 +369,25 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SDK_DIR)/System/Library/PrivateFrameworks";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "RecordMyScreen/headers/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = (
+					"-framework",
+					IOSurface,
+					"-framework",
+					CoreSurface,
+					"-framework",
+					IOMobileFramebuffer,
+					"-framework",
+					IOKit,
+				);
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

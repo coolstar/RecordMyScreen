@@ -7,6 +7,7 @@
 //
 
 #import "CSRecordingListViewController.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface CSRecordingListViewController ()
 
@@ -45,23 +46,28 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"]])
+        return 1;
     return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:CellIdentifier] autorelease];
+    }
+    cell.textLabel.text = @"video.mp4";
+    //NSNumber *size = [[[NSFileManager defaultManager] attributesOfItemAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] error:nil] objectForKey:@"NSFileSize"];
+    //cell.detailTextLabel.text = [NSString stringWithFormat:@"%d",size.intValue]; //dirty but this should be replaced anyways
     // Configure the cell...
     
     return cell;
@@ -111,13 +117,15 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
+    
+    MPMoviePlayerViewController *moviePlayerController = [[[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"]]] autorelease];
      // ...
      // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     [detailViewController release];
-     */
+    [self presentMoviePlayerViewControllerAnimated:moviePlayerController];
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+    [self.tableView reloadData];
 }
 
 @end
