@@ -66,6 +66,7 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:CellIdentifier] autorelease];
     }
     cell.textLabel.text = @"video.mp4";
+    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     //NSNumber *size = [[[NSFileManager defaultManager] attributesOfItemAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] error:nil] objectForKey:@"NSFileSize"];
     //cell.detailTextLabel.text = [NSString stringWithFormat:@"%d",size.intValue]; //dirty but this should be replaced anyways
     // Configure the cell...
@@ -113,6 +114,11 @@
 */
 
 #pragma mark - Table view delegate
+
+-(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    UIDocumentInteractionController *interactionController = [[UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"]]] retain];
+    [interactionController presentOptionsMenuFromRect:[tableView cellForRowAtIndexPath:indexPath].frame inView:self.view animated:YES];
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
