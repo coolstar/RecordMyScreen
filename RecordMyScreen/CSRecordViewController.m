@@ -155,14 +155,28 @@ extern UIImage *_UICreateScreenUIImage();
     int pitch = width*4, size = 4*width*height;
     int bPE=4;
     char pixelFormat[4] = {'A','R','G','B'};
+    CFNumberRef surfaceBytesPerRow,surfaceBytesPerElement,surfaceWidth,surfaceHeight,surfacePixelFormat,surfaceAllocSize;
+    
     dict = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
     CFDictionarySetValue(dict, kIOSurfaceIsGlobal, kCFBooleanTrue);
-    CFDictionarySetValue(dict, kIOSurfaceBytesPerRow, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &pitch));
-    CFDictionarySetValue(dict, kIOSurfaceBytesPerElement, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &bPE));
-    CFDictionarySetValue(dict, kIOSurfaceWidth, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &width));
-    CFDictionarySetValue(dict, kIOSurfaceHeight, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &height));
-    CFDictionarySetValue(dict, kIOSurfacePixelFormat, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, pixelFormat));
-    CFDictionarySetValue(dict, kIOSurfaceAllocSize, CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &size));
+    
+    surfaceBytesPerRow = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &pitch);
+    CFDictionarySetValue(dict, kIOSurfaceBytesPerRow, surfaceBytesPerRow);
+    
+    surfaceBytesPerElement = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &bPE);
+    CFDictionarySetValue(dict, kIOSurfaceBytesPerElement, surfaceBytesPerElement);
+    
+    surfaceWidth = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &width);
+    CFDictionarySetValue(dict, kIOSurfaceWidth, surfaceWidth);
+    
+    surfaceHeight = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &height);
+    CFDictionarySetValue(dict, kIOSurfaceHeight, surfaceHeight);
+    
+    surfacePixelFormat = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, pixelFormat);
+    CFDictionarySetValue(dict, kIOSurfacePixelFormat, surfacePixelFormat);
+    
+    surfaceAllocSize = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &size);
+    CFDictionarySetValue(dict, kIOSurfaceAllocSize, surfaceAllocSize);
     
     IOSurfaceRef destSurf = IOSurfaceCreate(dict);
     CoreSurfaceAcceleratorRef outAcc;
@@ -176,6 +190,14 @@ extern UIImage *_UICreateScreenUIImage();
     CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, IOSurfaceGetBaseAddress(destSurf), (width*height*4), NULL);
     CGImageRef cgImage=CGImageCreate(width, height, 8, 8*4, IOSurfaceGetBytesPerRow(destSurf), CGColorSpaceCreateDeviceRGB(), kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little, provider, NULL, YES, kCGRenderingIntentDefault);
     UIImage *shot = [UIImage imageWithCGImage: cgImage];
+    
+    CFRelease(surfaceBytesPerRow);
+    CFRelease(surfaceBytesPerElement);
+    CFRelease(surfaceWidth);
+    CFRelease(surfaceHeight);
+    CFRelease(surfacePixelFormat);
+    CFRelease(surfaceAllocSize);
+    
     CGImageRelease(cgImage);
     
     int thisshot = shotcount;
