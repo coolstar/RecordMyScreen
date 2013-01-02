@@ -188,7 +188,8 @@ extern UIImage *_UICreateScreenUIImage();
     IOSurfaceUnlock(screenSurface, kIOSurfaceLockReadOnly, &aseed);
     
     CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, IOSurfaceGetBaseAddress(destSurf), (width*height*4), NULL);
-    CGImageRef cgImage=CGImageCreate(width, height, 8, 8*4, IOSurfaceGetBytesPerRow(destSurf), CGColorSpaceCreateDeviceRGB(), kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little, provider, NULL, YES, kCGRenderingIntentDefault);
+    CGColorSpaceRef devicergb = CGColorSpaceCreateDeviceRGB();
+    CGImageRef cgImage = CGImageCreate(width, height, 8, 8*4, IOSurfaceGetBytesPerRow(destSurf), devicergb, kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little, provider, NULL, YES, kCGRenderingIntentDefault);
     UIImage *shot = [UIImage imageWithCGImage: cgImage];
     
     CFRelease(surfaceBytesPerRow);
@@ -198,6 +199,8 @@ extern UIImage *_UICreateScreenUIImage();
     CFRelease(surfacePixelFormat);
     CFRelease(surfaceAllocSize);
     
+    CGColorSpaceRelease(devicergb);
+    CGDataProviderRelease(provider);
     CGImageRelease(cgImage);
     
     int thisshot = shotcount;
@@ -259,15 +262,20 @@ extern UIImage *_UICreateScreenUIImage();
     //[adaptor appendPixelBuffer:buffer withPresentationTime:kCMTimeZero];
     while (writerInput.readyForMoreMediaData && i < shotcount)
     {
-        NSLog(@"inside for loop %d",i);
-            CMTime frameTime = CMTimeMake(1, 1);
-            CMTime lastTime=CMTimeMake(i, 6);
-            CMTime presentTime=CMTimeAdd(lastTime, frameTime);
-              
-            buffer = [self pixelBufferFromCGImage:[[UIImage imageWithContentsOfFile:[_shotdir stringByAppendingFormat:@"/%d.jpg",i]] CGImage] size:size];
+        NSLog(@"Inside loop for %d",i);
+        CMTime frameTime = CMTimeMake(1, 1);
+        CMTime lastTime=CMTimeMake(i, 6);
+        CMTime presentTime=CMTimeAdd(lastTime, frameTime);
         
-            [adaptor appendPixelBuffer:buffer withPresentationTime:presentTime];
-            i++;
+        UIImage *image = [[UIImage alloc] initWithContentsOfFile:[_shotdir stringByAppendingFormat:@"/%d.jpg",i]];
+        
+        buffer = [self pixelBufferFromCGImage:[image CGImage] size:size];
+        
+        [image release];
+        
+        [adaptor appendPixelBuffer:buffer withPresentationTime:presentTime];
+        CVPixelBufferRelease(buffer);
+        i++;
     }
     [writerInput markAsFinished];
     [videoWriter finishWriting];
