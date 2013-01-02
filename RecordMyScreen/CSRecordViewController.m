@@ -112,10 +112,9 @@ extern UIImage *_UICreateScreenUIImage();
             _statusLabel.text = @"Ready";
             _progressView.hidden = YES;
             _record.enabled = YES;
+            [[NSFileManager defaultManager] removeItemAtPath:_shotdir error:nil];
         });
     });
-    
-    [[NSFileManager defaultManager] removeItemAtPath:_shotdir error:nil];
     
     [_recordStartDate release];
     _recordStartDate = nil;
