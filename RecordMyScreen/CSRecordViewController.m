@@ -37,18 +37,27 @@ extern UIImage *_UICreateScreenUIImage();
     _record.momentary = YES;
     _record.segmentedControlStyle = UISegmentedControlStyleBar;
     _record.tintColor = [UIColor greenColor];
-    _record.frame = CGRectMake(20, 103, 135, 33);
     [_record addTarget:self action:@selector(record:) forControlEvents:UIControlEventValueChanged];
     
     _stop = [[[UISegmentedControl alloc] initWithItems:@[@"Stop"]] autorelease];
     _stop.momentary = YES;
     _stop.segmentedControlStyle = UISegmentedControlStyleBar;
     _stop.tintColor = [UIColor redColor];
-    _stop.frame = CGRectMake(170, 103, 135, 33);
     _stop.enabled = NO;
     [_stop addTarget:self action:@selector(stop:) forControlEvents:UIControlEventValueChanged];
     
     _progressView.hidden = YES;
+    
+    
+    // Check for iPad for layout
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        _record.frame = CGRectMake(20, 103, 135, 33);
+        _stop.frame = CGRectMake(170, 103, 135, 33);
+    } else {
+        _record.frame = CGRectMake(230, 150, 135, 33);
+        _stop.frame = CGRectMake(400, 150, 135, 33);
+    }
+    
     
     [self.view addSubview:_record];
     [self.view addSubview:_stop];

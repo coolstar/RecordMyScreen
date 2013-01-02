@@ -31,6 +31,7 @@
 		389BCD0A169010CF00877CA5 /* CSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 389BCD09169010CF00877CA5 /* CSAppDelegate.m */; };
 		389BCD2E1690113900877CA5 /* CSRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 389BCD2C1690113900877CA5 /* CSRecordViewController.m */; };
 		389BCD2F1690113900877CA5 /* CSRecordViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 389BCD2D1690113900877CA5 /* CSRecordViewController.xib */; };
+		DF80BC12169482EA00EA056A /* CSRecordViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,6 +87,7 @@
 		389BCD2B1690113900877CA5 /* CSRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRecordViewController.h; sourceTree = "<group>"; };
 		389BCD2C1690113900877CA5 /* CSRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRecordViewController.m; sourceTree = "<group>"; };
 		389BCD2D1690113900877CA5 /* CSRecordViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CSRecordViewController.xib; sourceTree = "<group>"; };
+		DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CSRecordViewController_iPad.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -241,6 +243,7 @@
 				389BCD2B1690113900877CA5 /* CSRecordViewController.h */,
 				389BCD2C1690113900877CA5 /* CSRecordViewController.m */,
 				389BCD2D1690113900877CA5 /* CSRecordViewController.xib */,
+				DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */,
 			);
 			name = CSRecordViewController;
 			sourceTree = "<group>";
@@ -310,6 +313,7 @@
 				38114EE91693DAC900BE64B4 /* icon@2x.png in Resources */,
 				38114EEF1693E51C00BE64B4 /* icon~ipad@2x.png in Resources */,
 				38114EF11693E52C00BE64B4 /* icon~ipad.png in Resources */,
+				DF80BC12169482EA00EA056A /* CSRecordViewController_iPad.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
