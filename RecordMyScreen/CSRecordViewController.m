@@ -37,16 +37,18 @@ extern UIImage *_UICreateScreenUIImage();
     _record.momentary = YES;
     _record.segmentedControlStyle = UISegmentedControlStyleBar;
     _record.tintColor = [UIColor greenColor];
-    _record.frame = CGRectMake(20, 98, 135, 33);
+    _record.frame = CGRectMake(20, 103, 135, 33);
     [_record addTarget:self action:@selector(record:) forControlEvents:UIControlEventValueChanged];
     
     _stop = [[[UISegmentedControl alloc] initWithItems:@[@"Stop"]] autorelease];
     _stop.momentary = YES;
     _stop.segmentedControlStyle = UISegmentedControlStyleBar;
     _stop.tintColor = [UIColor redColor];
-    _stop.frame = CGRectMake(170, 98, 135, 33);
+    _stop.frame = CGRectMake(170, 103, 135, 33);
     _stop.enabled = NO;
     [_stop addTarget:self action:@selector(stop:) forControlEvents:UIControlEventValueChanged];
+    
+    _progressView.hidden = YES;
     
     [self.view addSubview:_record];
     [self.view addSubview:_stop];
@@ -93,7 +95,8 @@ extern UIImage *_UICreateScreenUIImage();
     [_shotTimer invalidate];
     _shotTimer = nil;
     
-    _statusLabel.text = @"Finishing...";
+    _statusLabel.text = @"Encoding Movie...";
+    _progressView.hidden = NO;
     shotcount-=1;
     [_audioRecorder stop];
     [_audioRecorder release];
@@ -107,6 +110,7 @@ extern UIImage *_UICreateScreenUIImage();
         [self encodeVideotoPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] size:size duration:timeInterval];
         dispatch_async(dispatch_get_main_queue(), ^{
             _statusLabel.text = @"Ready";
+            _progressView.hidden = YES;
             _record.enabled = YES;
         });
     });
@@ -130,7 +134,7 @@ extern UIImage *_UICreateScreenUIImage();
 
 - (void)grabShot:(NSTimer *)timer {
     //UIImage *shot = _UICreateScreenUIImage();
-    
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; //This is a loop. We need our own Pool!
     
     IOMobileFramebufferConnection connect;
     kern_return_t result;
@@ -155,7 +159,7 @@ extern UIImage *_UICreateScreenUIImage();
     int pitch = width*4, size = 4*width*height;
     int bPE=4;
     char pixelFormat[4] = {'A','R','G','B'};
-    CFNumberRef surfaceBytesPerRow,surfaceBytesPerElement,surfaceWidth,surfaceHeight,surfacePixelFormat,surfaceAllocSize;
+    CFNumberRef surfaceBytesPerRow,surfaceBytesPerElement,surfaceWidth,surfaceHeight,surfacePixelFormat,surfaceAllocSize; //these will be released soon
     
     dict = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
     CFDictionarySetValue(dict, kIOSurfaceIsGlobal, kCFBooleanTrue);
@@ -185,28 +189,37 @@ extern UIImage *_UICreateScreenUIImage();
     CFDictionaryRef ed = (CFDictionaryRef)[NSDictionary dictionaryWithObjectsAndKeys: nil];
     CoreSurfaceAcceleratorTransferSurfaceWithSwap(outAcc, screenSurface, destSurf, ed);
     
-    IOSurfaceUnlock(screenSurface, kIOSurfaceLockReadOnly, &aseed);
+    IOSurfaceUnlock(screenSurface, kIOSurfaceLockReadOnly, &aseed); //stop locking these things! seriously!
     
     CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, IOSurfaceGetBaseAddress(destSurf), (width*height*4), NULL);
     CGColorSpaceRef devicergb = CGColorSpaceCreateDeviceRGB();
     CGImageRef cgImage = CGImageCreate(width, height, 8, 8*4, IOSurfaceGetBytesPerRow(destSurf), devicergb, kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little, provider, NULL, YES, kCGRenderingIntentDefault);
     UIImage *shot = [UIImage imageWithCGImage: cgImage];
     
-    CFRelease(surfaceBytesPerRow);
+    CGImageRelease(cgImage);
+    CGColorSpaceRelease(devicergb);
+    CGDataProviderRelease(provider);
+    
+    CFRelease(outAcc);
+    
+    CFRelease(surfaceBytesPerRow); //Don't keep these in the RAM. They're poisonous!
     CFRelease(surfaceBytesPerElement);
     CFRelease(surfaceWidth);
     CFRelease(surfaceHeight);
     CFRelease(surfacePixelFormat);
     CFRelease(surfaceAllocSize);
+    CFRelease(dict);
     
-    CGColorSpaceRelease(devicergb);
-    CGDataProviderRelease(provider);
-    CGImageRelease(cgImage);
+    IOServiceClose(framebufferService); //Close those connections!
+    IOServiceClose(connect);
     
     int thisshot = shotcount;
     NSData *data = UIImageJPEGRepresentation(shot, 1);
     //[shot release];
     [data writeToFile:[_shotdir stringByAppendingFormat:@"/%d.jpg",thisshot] atomically:YES];
+    
+    [pool drain]; //PURGE THE AUTORELEASED STUFF NAO!
+    CFRelease(destSurf);
     shotcount++;
 }
 
@@ -262,7 +275,9 @@ extern UIImage *_UICreateScreenUIImage();
     //[adaptor appendPixelBuffer:buffer withPresentationTime:kCMTimeZero];
     while (writerInput.readyForMoreMediaData && i < shotcount)
     {
-        NSLog(@"Inside loop for %d",i);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _progressView.progress = (float)i/(float)shotcount;
+        });
         CMTime frameTime = CMTimeMake(1, 1);
         CMTime lastTime=CMTimeMake(i, 6);
         CMTime presentTime=CMTimeAdd(lastTime, frameTime);
