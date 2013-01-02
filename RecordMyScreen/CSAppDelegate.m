@@ -25,8 +25,13 @@
     // Override point for customization after application launch.
     UINavigationController *savedNavVC;
     UIViewController *recordVC,*savedVC;
-
-    recordVC = [[[CSRecordViewController alloc] initWithNibName:@"CSRecordViewController" bundle:nil] autorelease];
+    
+    // Check for iPad
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        recordVC = [[[CSRecordViewController alloc] initWithNibName:@"CSRecordViewController" bundle:nil] autorelease];
+    } else {
+        recordVC = [[[CSRecordViewController alloc] initWithNibName:@"CSRecordViewController_iPad" bundle:nil] autorelease];
+    }
     
     savedVC = [[[CSRecordingListViewController alloc] init] autorelease];
     savedNavVC = [[[UINavigationController alloc] initWithRootViewController:savedVC] autorelease];
