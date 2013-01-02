@@ -125,6 +125,7 @@
     // Navigation logic may go here. Create and push another view controller.
     
     MPMoviePlayerViewController *moviePlayerController = [[[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"]]] autorelease];
+    [moviePlayerController.moviePlayer prepareToPlay];
      // ...
      // Pass the selected object to the new view controller.
     [self presentMoviePlayerViewControllerAnimated:moviePlayerController];
