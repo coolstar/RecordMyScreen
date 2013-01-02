@@ -115,6 +115,8 @@ extern UIImage *_UICreateScreenUIImage();
         });
     });
     
+    [[NSFileManager defaultManager] removeItemAtPath:_shotdir error:nil];
+    
     [_recordStartDate release];
     _recordStartDate = nil;
     _audioRecorder = nil;
