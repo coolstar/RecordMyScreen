@@ -285,6 +285,7 @@ extern UIImage *_UICreateScreenUIImage();
     //[adaptor appendPixelBuffer:buffer withPresentationTime:kCMTimeZero];
     while (writerInput.readyForMoreMediaData && i < shotcount)
     {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; //Some devices just don't have enough RAM to wait for the global pool (I'm looking at you iPhone 3GS, iPod touch 3G, and iPod touch 4)
         dispatch_async(dispatch_get_main_queue(), ^{
             _progressView.progress = (float)i/(float)shotcount;
         });
@@ -293,13 +294,13 @@ extern UIImage *_UICreateScreenUIImage();
         CMTime presentTime=CMTimeAdd(lastTime, frameTime);
         
         UIImage *image = [[UIImage alloc] initWithContentsOfFile:[_shotdir stringByAppendingFormat:@"/%d.jpg",i]];
-        
         buffer = [self pixelBufferFromCGImage:[image CGImage] size:size];
         
         [image release];
         
         [adaptor appendPixelBuffer:buffer withPresentationTime:presentTime];
         CVPixelBufferRelease(buffer);
+        [pool drain]; //Yo dawg, I heard you liked pools, but unfortunately this one needs to be drained.
         i++;
     }
     [writerInput markAsFinished];
