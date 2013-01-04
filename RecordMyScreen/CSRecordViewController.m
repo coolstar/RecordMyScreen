@@ -10,11 +10,13 @@
 #import <IOMobileFrameBuffer.h>
 #import <IOSurface.h>
 
-extern UIImage *_UICreateScreenUIImage();
-
 @interface CSRecordViewController ()
 
 @end
+
+void CSPixelBufferReleaseCallBack(void* releaseRefCon,const void *baseAddress){
+    CFRelease((IOSurfaceRef)releaseRefCon);
+}
 
 @implementation CSRecordViewController
 
@@ -87,6 +89,7 @@ extern UIImage *_UICreateScreenUIImage();
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
     dispatch_async(queue, ^{
         CGSize size = [UIScreen mainScreen].bounds.size;
+        [[NSFileManager defaultManager] removeItemAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] error:nil];
         [self encodeVideotoPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] size:size];
     });
     continuerecording = YES;
@@ -134,7 +137,7 @@ extern UIImage *_UICreateScreenUIImage();
     [dateFormatter release];
 }
 
-- (CGImageRef) grabShot {
+- (CVPixelBufferRef) grabShot {
     //UIImage *shot = _UICreateScreenUIImage();
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; //This is a loop. We need our own Pool!
     
@@ -195,7 +198,15 @@ extern UIImage *_UICreateScreenUIImage();
     
     CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, IOSurfaceGetBaseAddress(destSurf), (width*height*4), NULL);
     CGColorSpaceRef devicergb = CGColorSpaceCreateDeviceRGB();
-    CGImageRef cgImage = CGImageCreate(width, height, 8, 8*4, IOSurfaceGetBytesPerRow(destSurf), devicergb, kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little, provider, NULL, YES, kCGRenderingIntentDefault);
+    //CGImageRef cgImage = CGImageCreate(width, height, 8, 8*4, IOSurfaceGetBytesPerRow(destSurf), devicergb, kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little, provider, NULL, YES, kCGRenderingIntentDefault);
+    
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
+                             [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
+                             [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey,
+                             nil];
+    
+    CVPixelBufferRef pixelBuffer = nil;
+    CVReturn status = CVPixelBufferCreateWithBytes(kCFAllocatorDefault, width, height, kCVPixelFormatType_32ARGB, IOSurfaceGetBaseAddress(destSurf), IOSurfaceGetBytesPerRow(destSurf), CSPixelBufferReleaseCallBack, destSurf, (CFDictionaryRef)options, &pixelBuffer);
 
     CGColorSpaceRelease(devicergb);
     CGDataProviderRelease(provider);
@@ -214,8 +225,8 @@ extern UIImage *_UICreateScreenUIImage();
     IOServiceClose(connect);
     
     [pool drain]; //PURGE THE AUTORELEASED STUFF NAO!
-    CFRelease(destSurf);
-    return cgImage;
+    
+    return pixelBuffer;
 }
 
 - (void)viewDidUnload
@@ -264,8 +275,7 @@ extern UIImage *_UICreateScreenUIImage();
     
     CVPixelBufferRef buffer = NULL;
     int i = 0;
-    CGImageRef templateImage = [self grabShot];
-    buffer = [self pixelBufferFromCGImage:templateImage size:size];
+    buffer = [self grabShot];
     CVPixelBufferPoolCreatePixelBuffer (NULL, adaptor.pixelBufferPool, &buffer);
     
     //[adaptor appendPixelBuffer:buffer withPresentationTime:kCMTimeZero];
@@ -276,12 +286,11 @@ extern UIImage *_UICreateScreenUIImage();
         CMTime lastTime=CMTimeMake(i, 6);
         CMTime presentTime=CMTimeAdd(lastTime, frameTime);
         
-        CGImageRef image = [self grabShot];
-        buffer = [self pixelBufferFromCGImage:image size:size];
+        buffer = [self grabShot];
         
         [adaptor appendPixelBuffer:buffer withPresentationTime:presentTime];
         CVPixelBufferRelease(buffer);
-        CGImageRelease(image);
+        
         [pool drain]; //Yo dawg, I heard you liked pools, but unfortunately this one needs to be drained.
         usleep(1.0*1000.0/30); //30 Frames Per Second
         i++;
@@ -290,7 +299,6 @@ extern UIImage *_UICreateScreenUIImage();
     [videoWriter finishWriting];
     
     CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
-    CGImageRelease(templateImage);
     [videoWriter release];
     [writerInput release];
     isdone = YES;
