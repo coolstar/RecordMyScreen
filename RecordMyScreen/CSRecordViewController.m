@@ -23,7 +23,6 @@ extern UIImage *_UICreateScreenUIImage();
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.tabBarItem = [[[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Record", @"") image:[UIImage imageNamed:@"video"] tag:0] autorelease];
-        _shotdir = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/shots"] retain];
         // Custom initialization
     }
     return self;
@@ -65,15 +64,11 @@ extern UIImage *_UICreateScreenUIImage();
 }
 
 - (void)record:(id)sender {
-    [[NSFileManager defaultManager] removeItemAtPath:_shotdir error:nil];
-    [[NSFileManager defaultManager] createDirectoryAtPath:_shotdir withIntermediateDirectories:YES attributes:nil error:nil];
-    
     _statusLabel.text = @"00:00:00";
     _recordStartDate = [[NSDate date] retain];
     _stop.enabled = YES;
     _record.enabled = NO;
     
-    shotcount = 0;
     NSDictionary *audioSettings = @{
         AVNumberOfChannelsKey : [NSNumber numberWithInt:2]
     };
@@ -89,11 +84,12 @@ extern UIImage *_UICreateScreenUIImage();
                                                      selector:@selector(updateTimer:)
                                                      userInfo:nil
                                                       repeats:YES];
-    _shotTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f/30.0f
-                                                      target:self
-                                                    selector:@selector(grabShot:)
-                                                    userInfo:nil
-                                                     repeats:YES];
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
+    dispatch_async(queue, ^{
+        CGSize size = [UIScreen mainScreen].bounds.size;
+        [self encodeVideotoPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] size:size];
+    });
+    continuerecording = YES;
 }
 
 - (void)stop:(id)sender {
@@ -101,33 +97,29 @@ extern UIImage *_UICreateScreenUIImage();
     
     [_recordingTimer invalidate];
     _recordingTimer = nil;
-    [_shotTimer invalidate];
-    _shotTimer = nil;
     
-    _statusLabel.text = @"Encoding Movie...";
+    _statusLabel.text = @"Waiting for encoder to finish...";
     _progressView.hidden = NO;
-    shotcount-=1;
+
     [_audioRecorder stop];
     [_audioRecorder release];
 
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
     dispatch_async(queue, ^{
-        CGSize size = [UIImage imageWithContentsOfFile:[_shotdir stringByAppendingString:@"/0.jpg"]].size;
-        NSDate *currentDate = [NSDate date];
-        NSTimeInterval timeInterval = [currentDate timeIntervalSinceDate:_recordStartDate];
-        [[NSFileManager defaultManager] removeItemAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] error:nil];
-        [self encodeVideotoPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] size:size duration:timeInterval];
+        continuerecording = NO;
+        isdone = NO;
+        while (!isdone){
+            //wait until it's done
+        }
         dispatch_async(dispatch_get_main_queue(), ^{
             _statusLabel.text = @"Ready";
             _progressView.hidden = YES;
             _record.enabled = YES;
-            [[NSFileManager defaultManager] removeItemAtPath:_shotdir error:nil];
+            [_recordStartDate release];
+            _recordStartDate = nil;
+            _audioRecorder = nil;
         });
     });
-    
-    [_recordStartDate release];
-    _recordStartDate = nil;
-    _audioRecorder = nil;
 }
 
 - (void)updateTimer:(NSTimer *)timer {
@@ -142,7 +134,7 @@ extern UIImage *_UICreateScreenUIImage();
     [dateFormatter release];
 }
 
-- (void)grabShot:(NSTimer *)timer {
+- (CGImageRef) grabShot {
     //UIImage *shot = _UICreateScreenUIImage();
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; //This is a loop. We need our own Pool!
     
@@ -204,9 +196,7 @@ extern UIImage *_UICreateScreenUIImage();
     CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, IOSurfaceGetBaseAddress(destSurf), (width*height*4), NULL);
     CGColorSpaceRef devicergb = CGColorSpaceCreateDeviceRGB();
     CGImageRef cgImage = CGImageCreate(width, height, 8, 8*4, IOSurfaceGetBytesPerRow(destSurf), devicergb, kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little, provider, NULL, YES, kCGRenderingIntentDefault);
-    UIImage *shot = [UIImage imageWithCGImage: cgImage];
-    
-    CGImageRelease(cgImage);
+
     CGColorSpaceRelease(devicergb);
     CGDataProviderRelease(provider);
     
@@ -223,14 +213,9 @@ extern UIImage *_UICreateScreenUIImage();
     IOServiceClose(framebufferService); //Close those connections!
     IOServiceClose(connect);
     
-    int thisshot = shotcount;
-    NSData *data = UIImageJPEGRepresentation(shot, 1);
-    //[shot release];
-    [data writeToFile:[_shotdir stringByAppendingFormat:@"/%d.jpg",thisshot] atomically:YES];
-    
     [pool drain]; //PURGE THE AUTORELEASED STUFF NAO!
     CFRelease(destSurf);
-    shotcount++;
+    return cgImage;
 }
 
 - (void)viewDidUnload
@@ -246,11 +231,10 @@ extern UIImage *_UICreateScreenUIImage();
 }
 
 -(void)dealloc {
-    [_shotdir release];
     [super dealloc];
 }
 
--(void)encodeVideotoPath:(NSString*)path size:(CGSize)size duration:(int)duration
+-(void)encodeVideotoPath:(NSString*)path size:(CGSize)size
 {
     NSError *error = nil;
     AVAssetWriter *videoWriter = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath:path]
@@ -274,42 +258,42 @@ extern UIImage *_UICreateScreenUIImage();
     
     
     //Start a session:
+    [writerInput setExpectsMediaDataInRealTime:YES];
     [videoWriter startWriting];
     [videoWriter startSessionAtSourceTime:kCMTimeZero];
     
     CVPixelBufferRef buffer = NULL;
     int i = 0;
-    buffer = [self pixelBufferFromCGImage:[[UIImage imageWithContentsOfFile:[_shotdir stringByAppendingFormat:@"/%d.jpg",i]] CGImage] size:size];
+    CGImageRef templateImage = [self grabShot];
+    buffer = [self pixelBufferFromCGImage:templateImage size:size];
     CVPixelBufferPoolCreatePixelBuffer (NULL, adaptor.pixelBufferPool, &buffer);
     
     //[adaptor appendPixelBuffer:buffer withPresentationTime:kCMTimeZero];
-    while (writerInput.readyForMoreMediaData && i < shotcount)
+    while (writerInput.readyForMoreMediaData && continuerecording)
     {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; //Some devices just don't have enough RAM to wait for the global pool (I'm looking at you iPhone 3GS, iPod touch 3G, and iPod touch 4)
-        dispatch_async(dispatch_get_main_queue(), ^{
-            _progressView.progress = (float)i/(float)shotcount;
-        });
         CMTime frameTime = CMTimeMake(1, 1);
         CMTime lastTime=CMTimeMake(i, 6);
         CMTime presentTime=CMTimeAdd(lastTime, frameTime);
         
-        UIImage *image = [[UIImage alloc] initWithContentsOfFile:[_shotdir stringByAppendingFormat:@"/%d.jpg",i]];
-        buffer = [self pixelBufferFromCGImage:[image CGImage] size:size];
-        
-        [image release];
+        CGImageRef image = [self grabShot];
+        buffer = [self pixelBufferFromCGImage:image size:size];
         
         [adaptor appendPixelBuffer:buffer withPresentationTime:presentTime];
         CVPixelBufferRelease(buffer);
+        CGImageRelease(image);
         [pool drain]; //Yo dawg, I heard you liked pools, but unfortunately this one needs to be drained.
+        usleep(1.0*1000.0/30); //30 Frames Per Second
         i++;
     }
     [writerInput markAsFinished];
     [videoWriter finishWriting];
     
     CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
+    CGImageRelease(templateImage);
     [videoWriter release];
     [writerInput release];
-    NSLog (@"Done");
+    isdone = YES;
 }
 
 - (CVPixelBufferRef) pixelBufferFromCGImage:(CGImageRef)image size:(CGSize)size

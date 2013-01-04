@@ -14,11 +14,11 @@
     IBOutlet UIImageView *_recordbar;
     IBOutlet UILabel *_statusLabel;
     IBOutlet UIProgressView *_progressView;
-    NSTimer *_recordingTimer,*_shotTimer;
+    NSTimer *_recordingTimer;
     NSDate *_recordStartDate;
     AVAudioRecorder *_audioRecorder;
-    NSString *_shotdir;
-    int shotcount;
+    
+    BOOL continuerecording,isdone;
     
     AVAssetWriter *_videoWriter;
     AVAssetWriterInput *_videoWriterInput;
