@@ -20,7 +20,6 @@ extern UIImage *_UICreateScreenUIImage();
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.tabBarItem = [[[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Record", @"") image:[UIImage imageNamed:@"video"] tag:0] autorelease];
-        _shotdir = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/shots"] retain];
         _pixelBufferLock = [NSLock new];
         
         //video queue
@@ -28,14 +27,13 @@ extern UIImage *_UICreateScreenUIImage();
         //frame rate
         _fps = 24;
         //encoding kbps
-        _kbps = 500;
+        _kbps = 5000;
     }
     return self;
 }
 -(void)dealloc {
     dispatch_release(_video_queue);
     CFRelease(_surface);
-    [_shotdir release];
     [super dealloc];
 }
 - (void)viewDidLoad
@@ -75,14 +73,10 @@ extern UIImage *_UICreateScreenUIImage();
 
 - (void)record:(id)sender
 {
-    
-        [[NSFileManager defaultManager] removeItemAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] error:nil];
+
     if(!_videoWriter)
         [self setupVideoContext];
-    
-    
-    [[NSFileManager defaultManager] removeItemAtPath:_shotdir error:nil];
-    [[NSFileManager defaultManager] createDirectoryAtPath:_shotdir withIntermediateDirectories:YES attributes:nil error:nil];
     
     _statusLabel.text = @"00:00:00";
     _recordStartDate = [[NSDate date] retain];
