@@ -25,7 +25,6 @@ extern UIImage *_UICreateScreenUIImage();
         _shotQueue = [NSMutableArray new];
         _pixelBufferLock = [NSLock new];
         _fps = 24;
-        // Custom initialization
     }
     return self;
 }
@@ -129,16 +128,12 @@ extern UIImage *_UICreateScreenUIImage();
             
             long int diff = (currentTime.tv_usec + (1000 * currentTime.tv_sec) ) - (lastCapture.tv_usec + (1000 * lastCapture.tv_sec) );
             
-//            NSLog(@"current time usec: %d", currentTime.tv_usec);
-            
-            
             if(diff >= msBeforeNextCapture)
             {
                 //time since start
                 long int msSinceStart = (currentTime.tv_usec + (1000 * currentTime.tv_sec) ) - (startTime.tv_usec + (1000 * startTime.tv_sec) );
                 
                 int frameNumber = msSinceStart / msBeforeNextCapture;
-//                NSLog(@"frameNumber: %d - %ld / %d", frameNumber, msSinceStart, msBeforeNextCapture);
                 
                 CMTime frameTime = CMTimeMake(1, 1);
                 CMTime lastTime=CMTimeMake(i, targetFPS);
@@ -148,7 +143,6 @@ extern UIImage *_UICreateScreenUIImage();
                 NSParameterAssert(frameNumber != lastFrame);
                 lastFrame = frameNumber;
                     
-//                NSLog(@"present time: %lld, %d", presentTime.value, presentTime.timescale);
                 [self captureShot:presentTime];
                 i++;
                 lastCapture = currentTime;
@@ -284,17 +278,9 @@ void CARenderServerRenderDisplay( kern_return_t a, CFStringRef b, IOSurfaceRef s
                 [_shotQueue addObject:cap];
                 [cap release];
             }
-            if(!_isRecording && thisShot == (shotcount - 1)){
+            if(!_isRecording && thisShot == (shotcount - 1))
                 [self finishEncoding];
-            }
         });
-        /*
-        //finish up on the last shot
-         
-        if(!_isRecording && thisShot == (shotcount - 1)){
-            NSLog(@"finishing encoding!");
-            [self finishEncoding];
-        }*/
     });
 
     
@@ -363,7 +349,6 @@ void CARenderServerRenderDisplay( kern_return_t a, CFStringRef b, IOSurfaceRef s
     [_videoWriter addInput:_videoWriterInput];
     
     NSDictionary *bufferAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-//                                      [NSNumber numberWithInt:kCVPixelFormatType_32ARGB], kCVPixelBufferPixelFormatTypeKey,
                                       [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], kCVPixelBufferPixelFormatTypeKey,
                                       [NSNumber numberWithInt:_width], kCVPixelBufferWidthKey,
                                       [NSNumber numberWithInt:_height], kCVPixelBufferHeightKey,
