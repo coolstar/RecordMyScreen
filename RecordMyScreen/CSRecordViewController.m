@@ -116,7 +116,6 @@ extern UIImage *_UICreateScreenUIImage();
         startTime.tv_usec /= 1000;
         
         int lastFrame = -1;
-        int i=0;
         while(_isRecording)
         {   
             //time passed since last capture
@@ -140,7 +139,6 @@ extern UIImage *_UICreateScreenUIImage();
                 lastFrame = frameNumber;
                     
                 [self captureShot:presentTime];
-                i++;
                 lastCapture = currentTime;
             }
         }
