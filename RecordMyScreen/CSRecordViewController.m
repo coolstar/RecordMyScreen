@@ -8,13 +8,11 @@
 
 #import "CSRecordViewController.h"
 #import <IOMobileFrameBuffer.h>
-#import <IOSurface.h>
+#include <sys/time.h>
+#import <CoreVideo/CVPixelBuffer.h>
+#import "FYCapture.h"
 
 extern UIImage *_UICreateScreenUIImage();
-
-@interface CSRecordViewController ()
-
-@end
 
 @implementation CSRecordViewController
 
@@ -24,6 +22,9 @@ extern UIImage *_UICreateScreenUIImage();
     if (self) {
         self.tabBarItem = [[[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Record", @"") image:[UIImage imageNamed:@"video"] tag:0] autorelease];
         _shotdir = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/shots"] retain];
+        _shotQueue = [NSMutableArray new];
+        _pixelBufferLock = [NSLock new];
+        _fps = 24;
         // Custom initialization
     }
     return self;
@@ -64,7 +65,14 @@ extern UIImage *_UICreateScreenUIImage();
     // Do any additional setup after loading the view from its nib.
 }
 
-- (void)record:(id)sender {
+- (void)record:(id)sender
+{
+    
+        [[NSFileManager defaultManager] removeItemAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] error:nil];
+    if(!_videoWriter)
+        [self setupVideoContext];
+    
+    
     [[NSFileManager defaultManager] removeItemAtPath:_shotdir error:nil];
     [[NSFileManager defaultManager] createDirectoryAtPath:_shotdir withIntermediateDirectories:YES attributes:nil error:nil];
     
@@ -89,34 +97,85 @@ extern UIImage *_UICreateScreenUIImage();
                                                      selector:@selector(updateTimer:)
                                                      userInfo:nil
                                                       repeats:YES];
-    _shotTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f/30.0f
-                                                      target:self
-                                                    selector:@selector(grabShot:)
-                                                    userInfo:nil
-                                                     repeats:YES];
+    
+    _isRecording = TRUE;
+    
+    //capture loop
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        //how many frames per second should we capture?
+        int targetFPS = _fps;
+        int msBeforeNextCapture = 1000 / targetFPS;
+        
+        
+        struct timeval lastCapture, currentTime, startTime;
+        lastCapture.tv_sec = 0;
+        lastCapture.tv_usec = 0;
+        
+        //recording start time
+        gettimeofday(&startTime, NULL);
+        startTime.tv_usec /= 1000;
+        
+        int lastFrame = -1;
+        int i=0;
+        while(_isRecording)
+        {
+            
+            //time passed since last capture
+            gettimeofday(&currentTime, NULL);
+            
+            //convert to milliseconds to avoid overflows
+            currentTime.tv_usec /= 1000;
+            
+            long int diff = (currentTime.tv_usec + (1000 * currentTime.tv_sec) ) - (lastCapture.tv_usec + (1000 * lastCapture.tv_sec) );
+            
+//            NSLog(@"current time usec: %d", currentTime.tv_usec);
+            
+            
+            if(diff >= msBeforeNextCapture)
+            {
+                //time since start
+                long int msSinceStart = (currentTime.tv_usec + (1000 * currentTime.tv_sec) ) - (startTime.tv_usec + (1000 * startTime.tv_sec) );
+                
+                int frameNumber = msSinceStart / msBeforeNextCapture;
+//                NSLog(@"frameNumber: %d - %ld / %d", frameNumber, msSinceStart, msBeforeNextCapture);
+                
+                CMTime frameTime = CMTimeMake(1, 1);
+                CMTime lastTime=CMTimeMake(i, targetFPS);
+                CMTime presentTime=CMTimeAdd(lastTime, frameTime);
+                presentTime = CMTimeMake(frameNumber, targetFPS);
+                
+                NSParameterAssert(frameNumber != lastFrame);
+                lastFrame = frameNumber;
+                    
+//                NSLog(@"present time: %lld, %d", presentTime.value, presentTime.timescale);
+                [self captureShot:presentTime];
+                i++;
+                lastCapture = currentTime;
+            }
+        }
+        
+    });
 }
 
 - (void)stop:(id)sender {
+    _isRecording = NO;
     _stop.enabled = NO;
     
     [_recordingTimer invalidate];
     _recordingTimer = nil;
-    [_shotTimer invalidate];
-    _shotTimer = nil;
     
     _statusLabel.text = @"Encoding Movie...";
     _progressView.hidden = NO;
-    shotcount-=1;
     [_audioRecorder stop];
     [_audioRecorder release];
 
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
     dispatch_async(queue, ^{
-        CGSize size = [UIImage imageWithContentsOfFile:[_shotdir stringByAppendingString:@"/0.jpg"]].size;
-        NSDate *currentDate = [NSDate date];
-        NSTimeInterval timeInterval = [currentDate timeIntervalSinceDate:_recordStartDate];
-        [[NSFileManager defaultManager] removeItemAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] error:nil];
-        [self encodeVideotoPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] size:size duration:timeInterval];
+//        CGSize size = [UIImage imageWithContentsOfFile:[_shotdir stringByAppendingString:@"/0.jpg"]].size;
+//        NSDate *currentDate = [NSDate date];
+//        NSTimeInterval timeInterval = [currentDate timeIntervalSinceDate:_recordStartDate];
+//        [self encodeVideotoPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] size:size duration:timeInterval];
         dispatch_async(dispatch_get_main_queue(), ^{
             _statusLabel.text = @"Ready";
             _progressView.hidden = YES;
@@ -128,6 +187,10 @@ extern UIImage *_UICreateScreenUIImage();
     [_recordStartDate release];
     _recordStartDate = nil;
     _audioRecorder = nil;
+    
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [self finishEncoding];
+//    });
 }
 
 - (void)updateTimer:(NSTimer *)timer {
@@ -141,98 +204,101 @@ extern UIImage *_UICreateScreenUIImage();
     _statusLabel.text = timeString;
     [dateFormatter release];
 }
-
-- (void)grabShot:(NSTimer *)timer {
-    //UIImage *shot = _UICreateScreenUIImage();
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; //This is a loop. We need our own Pool!
-    
-    IOMobileFramebufferConnection connect;
-    kern_return_t result;
-    CoreSurfaceBufferRef screenSurface = NULL;
-    
-    io_service_t framebufferService = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("AppleH1CLCD"));
-    if(!framebufferService)
-        framebufferService = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("AppleM2CLCD"));
-    if(!framebufferService)
-        framebufferService = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("AppleCLCD"));
-    
-    result = IOMobileFramebufferOpen(framebufferService, mach_task_self(), 0, &connect);
-    
-    result = IOMobileFramebufferGetLayerDefaultSurface(connect, 0, &screenSurface);
-    
-    uint32_t aseed;
-    IOSurfaceLock(screenSurface, kIOSurfaceLockReadOnly, &aseed);
-    uint32_t width = IOSurfaceGetWidth(screenSurface);
-    uint32_t height = IOSurfaceGetHeight(screenSurface);
-    
-    CFMutableDictionaryRef dict;
-    int pitch = width*4, size = 4*width*height;
-    int bPE=4;
-    char pixelFormat[4] = {'A','R','G','B'};
-    CFNumberRef surfaceBytesPerRow,surfaceBytesPerElement,surfaceWidth,surfaceHeight,surfacePixelFormat,surfaceAllocSize; //these will be released soon
-    
-    dict = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-    CFDictionarySetValue(dict, kIOSurfaceIsGlobal, kCFBooleanTrue);
-    
-    surfaceBytesPerRow = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &pitch);
-    CFDictionarySetValue(dict, kIOSurfaceBytesPerRow, surfaceBytesPerRow);
-    
-    surfaceBytesPerElement = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &bPE);
-    CFDictionarySetValue(dict, kIOSurfaceBytesPerElement, surfaceBytesPerElement);
-    
-    surfaceWidth = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &width);
-    CFDictionarySetValue(dict, kIOSurfaceWidth, surfaceWidth);
-    
-    surfaceHeight = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &height);
-    CFDictionarySetValue(dict, kIOSurfaceHeight, surfaceHeight);
-    
-    surfacePixelFormat = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, pixelFormat);
-    CFDictionarySetValue(dict, kIOSurfacePixelFormat, surfacePixelFormat);
-    
-    surfaceAllocSize = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &size);
-    CFDictionarySetValue(dict, kIOSurfaceAllocSize, surfaceAllocSize);
-    
-    IOSurfaceRef destSurf = IOSurfaceCreate(dict);
-    CoreSurfaceAcceleratorRef outAcc;
-    CoreSurfaceAcceleratorCreate(NULL, 0, &outAcc);
-    
-    CFDictionaryRef ed = (CFDictionaryRef)[NSDictionary dictionaryWithObjectsAndKeys: nil];
-    CoreSurfaceAcceleratorTransferSurfaceWithSwap(outAcc, screenSurface, destSurf, ed);
-    
-    IOSurfaceUnlock(screenSurface, kIOSurfaceLockReadOnly, &aseed); //stop locking these things! seriously!
-    
-    CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, IOSurfaceGetBaseAddress(destSurf), (width*height*4), NULL);
-    CGColorSpaceRef devicergb = CGColorSpaceCreateDeviceRGB();
-    CGImageRef cgImage = CGImageCreate(width, height, 8, 8*4, IOSurfaceGetBytesPerRow(destSurf), devicergb, kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little, provider, NULL, YES, kCGRenderingIntentDefault);
-    UIImage *shot = [UIImage imageWithCGImage: cgImage];
-    
-    CGImageRelease(cgImage);
-    CGColorSpaceRelease(devicergb);
-    CGDataProviderRelease(provider);
-    
-    CFRelease(outAcc);
-    
-    CFRelease(surfaceBytesPerRow); //Don't keep these in the RAM. They're poisonous!
-    CFRelease(surfaceBytesPerElement);
-    CFRelease(surfaceWidth);
-    CFRelease(surfaceHeight);
-    CFRelease(surfacePixelFormat);
-    CFRelease(surfaceAllocSize);
-    CFRelease(dict);
-    
-    IOServiceClose(framebufferService); //Close those connections!
-    IOServiceClose(connect);
-    
-    int thisshot = shotcount;
-    NSData *data = UIImageJPEGRepresentation(shot, 1);
-    //[shot release];
-    [data writeToFile:[_shotdir stringByAppendingFormat:@"/%d.jpg",thisshot] atomically:YES];
-    
-    [pool drain]; //PURGE THE AUTORELEASED STUFF NAO!
-    CFRelease(destSurf);
-    shotcount++;
+- (void)createScreenSurface
+{
+    unsigned pixelFormat = 0x42475241;//'ARGB';
+    int bytesPerElement = 4;
+    _bytesPerRow = (bytesPerElement * _width);
+    //    char *memoryRegion = "PurpleGfxMem";
+    NSDictionary *properties = [NSDictionary dictionaryWithObjectsAndKeys:
+                                [NSNumber numberWithBool:YES], kIOSurfaceIsGlobal,
+                                [NSNumber numberWithInt:bytesPerElement], kIOSurfaceBytesPerElement,
+                                [NSNumber numberWithInt:_bytesPerRow], kIOSurfaceBytesPerRow,
+                                [NSNumber numberWithInt:_width], kIOSurfaceWidth,
+                                [NSNumber numberWithInt:_height], kIOSurfaceHeight,
+                                [NSNumber numberWithUnsignedInt:pixelFormat], kIOSurfacePixelFormat,
+                                [NSNumber numberWithInt:_bytesPerRow * _height], kIOSurfaceAllocSize,
+                                //@"PurpleGfxMem", kIOSurfaceMemoryRegion,
+                                nil];
+    _surface = IOSurfaceCreate((CFDictionaryRef)properties);
 }
+void CARenderServerRenderDisplay( kern_return_t a, CFStringRef b, IOSurfaceRef surface, int x, int y);
+- (void)captureShot:(CMTime)frameTime
+{
+    
+    if(!_surface)
+        [self createScreenSurface];
 
+    IOSurfaceLock(_surface, 0, nil);
+    CARenderServerRenderDisplay(0, CFSTR("LCD"), _surface, 0, 0);
+    IOSurfaceUnlock(_surface, 0, 0);
+
+    void *baseAddr = IOSurfaceGetBaseAddress(_surface);
+    int totalBytes = _bytesPerRow * _height;
+    void *rawData = malloc(totalBytes);
+    memcpy(rawData, baseAddr, totalBytes);
+    
+    int thisShot = shotcount;
+    shotcount++;
+    
+    
+//    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CVPixelBufferRef pixelBuffer = NULL;
+        if(!_pixelBufferAdaptor.pixelBufferPool){
+            free(rawData);
+            return;
+        }
+        NSParameterAssert(_pixelBufferAdaptor.pixelBufferPool != NULL);
+        [_pixelBufferLock lock];
+        CVPixelBufferPoolCreatePixelBuffer (kCFAllocatorDefault, _pixelBufferAdaptor.pixelBufferPool, &pixelBuffer);
+        [_pixelBufferLock unlock];
+        NSParameterAssert(pixelBuffer != NULL);
+        
+        //unlock pixel buffer data
+        CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+        void *pixelData = CVPixelBufferGetBaseAddress(pixelBuffer);
+        NSParameterAssert(pixelData != NULL);
+        
+        //copy over raw image data and free
+        memcpy(pixelData, rawData, totalBytes);
+        free(rawData);
+        
+        //unlock pixel buffer data
+        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+
+            if(_isRecording && _videoWriterInput.readyForMoreMediaData)
+            {
+                NSLog(@"appending @ frame %lld", frameTime.value);
+                [_pixelBufferLock lock];
+                [_pixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:frameTime];
+                CVPixelBufferRelease(pixelBuffer);
+                [_pixelBufferLock unlock];
+            }
+            else
+            {
+                FYCapture *cap = [[FYCapture alloc] initWithPixelBuffer:pixelBuffer frameTime:frameTime];
+                [_shotQueue addObject:cap];
+                [cap release];
+            }
+            if(!_isRecording && thisShot == (shotcount - 1)){
+                [self finishEncoding];
+            }
+        });
+        /*
+        //finish up on the last shot
+         
+        if(!_isRecording && thisShot == (shotcount - 1)){
+            NSLog(@"finishing encoding!");
+            [self finishEncoding];
+        }*/
+    });
+
+    
+}
 - (void)viewDidUnload
 {
     [super viewDidUnload];
@@ -246,105 +312,111 @@ extern UIImage *_UICreateScreenUIImage();
 }
 
 -(void)dealloc {
+    [_shotQueue release];
+    CFRelease(_surface);
     [_shotdir release];
     [super dealloc];
 }
-
--(void)encodeVideotoPath:(NSString*)path size:(CGSize)size duration:(int)duration
+- (void)setupVideoContext
 {
+    CGRect screenRect = [UIScreen mainScreen].bounds;
+    float scale = [UIScreen mainScreen].scale;
+    _width = screenRect.size.width * scale;
+    _height = screenRect.size.height * scale;
+    
+    NSString *outPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"];
+    
     NSError *error = nil;
-    AVAssetWriter *videoWriter = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath:path]
+    
+    _videoWriter = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath:outPath]
                                                            fileType:AVFileTypeMPEG4
                                                               error:&error];
-    NSParameterAssert(videoWriter);
     
-    NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+    if(error)
+    {
+        NSLog(@"error: %@", error);
+        return;
+    }
+    NSParameterAssert(_videoWriter);
+    
+    NSMutableDictionary * compressionProperties = [NSMutableDictionary dictionary];
+    [compressionProperties setObject: [NSNumber numberWithInt: 1000000] forKey: AVVideoAverageBitRateKey];
+    [compressionProperties setObject: [NSNumber numberWithInt: _fps] forKey: AVVideoMaxKeyFrameIntervalKey];
+    //[compressionProperties setObject: AVVideoProfileLevelH264Main31 forKey: AVVideoProfileLevelKey];
+    [compressionProperties setObject: AVVideoProfileLevelH264Main41 forKey: AVVideoProfileLevelKey];
+    
+    NSMutableDictionary *outputSettings = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    AVVideoCodecH264, AVVideoCodecKey,
-                                   [NSNumber numberWithFloat:size.width], AVVideoWidthKey,
-                                   [NSNumber numberWithFloat:size.height], AVVideoHeightKey,
+                                   [NSNumber numberWithInt:_width], AVVideoWidthKey,
+                                   [NSNumber numberWithInt:_height], AVVideoHeightKey,
+                                   compressionProperties, AVVideoCompressionPropertiesKey,
                                    nil];
-    AVAssetWriterInput* writerInput = [[AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
-                                                                          outputSettings:videoSettings] retain];
     
-    AVAssetWriterInputPixelBufferAdaptor *adaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput
-                                                                                                                     sourcePixelBufferAttributes:nil];
-    NSParameterAssert(writerInput);
-    NSParameterAssert([videoWriter canAddInput:writerInput]);
-    [videoWriter addInput:writerInput];
+    NSParameterAssert([_videoWriter canApplyOutputSettings:outputSettings forMediaType:AVMediaTypeVideo]);
     
+    _videoWriterInput = [[AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
+                                                                          outputSettings:outputSettings] retain];
+    
+
+    NSParameterAssert(_videoWriterInput);
+    NSParameterAssert([_videoWriter canAddInput:_videoWriterInput]);
+    [_videoWriter addInput:_videoWriterInput];
+    
+    NSDictionary *bufferAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                      [NSNumber numberWithInt:kCVPixelFormatType_32ARGB], kCVPixelBufferPixelFormatTypeKey,
+                                      [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], kCVPixelBufferPixelFormatTypeKey,
+                                      [NSNumber numberWithInt:_width], kCVPixelBufferWidthKey,
+                                      [NSNumber numberWithInt:_height], kCVPixelBufferHeightKey,
+                                      kCFAllocatorDefault, kCVPixelBufferMemoryAllocatorKey,
+                                      nil];
+    
+    _pixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:_videoWriterInput
+                                                                                                                     sourcePixelBufferAttributes:bufferAttributes];
+    [_pixelBufferAdaptor retain];
+    
+    //FPS
+    _videoWriterInput.mediaTimeScale = _fps;
+    _videoWriter.movieTimeScale = _fps;
     
     //Start a session:
-    [videoWriter startWriting];
-    [videoWriter startSessionAtSourceTime:kCMTimeZero];
+    [_videoWriterInput setExpectsMediaDataInRealTime:YES];
+    [_videoWriter startWriting];
+    [_videoWriter startSessionAtSourceTime:kCMTimeZero];
     
-    CVPixelBufferRef buffer = NULL;
-    int i = 0;
-    buffer = [self pixelBufferFromCGImage:[[UIImage imageWithContentsOfFile:[_shotdir stringByAppendingFormat:@"/%d.jpg",i]] CGImage] size:size];
-    CVPixelBufferPoolCreatePixelBuffer (NULL, adaptor.pixelBufferPool, &buffer);
+    NSParameterAssert(_pixelBufferAdaptor.pixelBufferPool != NULL);
     
-    //[adaptor appendPixelBuffer:buffer withPresentationTime:kCMTimeZero];
-    while (writerInput.readyForMoreMediaData && i < shotcount)
+}
+-(void)finishEncoding
+{
+    
+    NSLog(@"shots queued: %d", _shotQueue.count);
+    
+    while([_shotQueue count])
     {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; //Some devices just don't have enough RAM to wait for the global pool (I'm looking at you iPhone 3GS, iPod touch 3G, and iPod touch 4)
-        dispatch_async(dispatch_get_main_queue(), ^{
-            _progressView.progress = (float)i/(float)shotcount;
-        });
-        CMTime frameTime = CMTimeMake(1, 1);
-        CMTime lastTime=CMTimeMake(i, 6);
-        CMTime presentTime=CMTimeAdd(lastTime, frameTime);
-        
-        UIImage *image = [[UIImage alloc] initWithContentsOfFile:[_shotdir stringByAppendingFormat:@"/%d.jpg",i]];
-        buffer = [self pixelBufferFromCGImage:[image CGImage] size:size];
-        
-        [image release];
-        
-        [adaptor appendPixelBuffer:buffer withPresentationTime:presentTime];
-        CVPixelBufferRelease(buffer);
-        [pool drain]; //Yo dawg, I heard you liked pools, but unfortunately this one needs to be drained.
-        i++;
+        if(_videoWriterInput.readyForMoreMediaData)
+        {
+            FYCapture *cap = [_shotQueue objectAtIndex:0];
+            [_pixelBufferLock lock];
+            [_pixelBufferAdaptor appendPixelBuffer:cap.buffer withPresentationTime:cap.frameTime];
+            CVPixelBufferRelease(cap.buffer);
+            [_shotQueue removeObject:cap];
+            [_pixelBufferLock unlock];
+        }
     }
-    [writerInput markAsFinished];
-    [videoWriter finishWriting];
+
+    [_videoWriterInput markAsFinished];
+    [_videoWriter finishWriting];
     
-    CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
-    [videoWriter release];
-    [writerInput release];
+    CVPixelBufferPoolRelease(_pixelBufferAdaptor.pixelBufferPool);
+    [_videoWriter release];
+    [_videoWriterInput release];
+    [_pixelBufferAdaptor release];
+    _videoWriter = nil;
+    _videoWriterInput = nil;
+    _pixelBufferAdaptor = nil;
+    
     NSLog (@"Done");
 }
 
-- (CVPixelBufferRef) pixelBufferFromCGImage:(CGImageRef)image size:(CGSize)size
-{
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
-                             [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
-                             [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey,
-                             nil];
-    CVPixelBufferRef pxbuffer = NULL;
-    CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault, size.width,
-                                          size.height, kCVPixelFormatType_32ARGB, (CFDictionaryRef) options,
-                                          &pxbuffer);
-    NSParameterAssert(status == kCVReturnSuccess && pxbuffer != NULL);
-    
-    CVPixelBufferLockBaseAddress(pxbuffer, 0);
-    void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
-    NSParameterAssert(pxdata != NULL);
-    
-    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(pxdata, size.width,
-                                                 size.height, 8, 4*size.width, rgbColorSpace,
-                                                 kCGImageAlphaNoneSkipFirst);
-    NSParameterAssert(context);
-    
-    //CGContextTranslateCTM(context, 0, CGImageGetHeight(image));
-    //CGContextScaleCTM(context, 1.0, -1.0);//Flip vertically to account for different origin
-    
-    CGContextDrawImage(context, CGRectMake(0, 0, CGImageGetWidth(image),
-                                           CGImageGetHeight(image)), image);
-    CGColorSpaceRelease(rgbColorSpace);
-    CGContextRelease(context);
-    
-    CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
-    
-    return pxbuffer;
-}
 
 @end
