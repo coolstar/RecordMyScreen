@@ -21,7 +21,6 @@
     AVAudioRecorder *_audioRecorder;
     NSString *_shotdir;
     int shotcount;
-    NSMutableArray *_shotQueue;
     
     //surface
     IOSurfaceRef _surface;
@@ -31,6 +30,8 @@
     
     
     //video writing
+    dispatch_queue_t _video_queue;
+    int _kbps;
     int _fps;
     NSLock *_pixelBufferLock;
     AVAssetWriter *_videoWriter;
@@ -42,3 +43,5 @@
 - (void)captureShot:(CMTime)frameTime;
 - (void)setupVideoContext;
 @end
+
+void CARenderServerRenderDisplay( kern_return_t a, CFStringRef b, IOSurfaceRef surface, int x, int y);
