@@ -20,6 +20,7 @@
     self = [super init];
     if (self) {
         self.title = NSLocalizedString(@"Recordings", @"");
+        self.tabBarItem = [[[UITabBarItem alloc] initWithTitle:self.title image:[UIImage imageNamed:@"list"] tag:0] autorelease];
         // Custom initialization
     }
     return self;
