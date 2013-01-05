@@ -11,10 +11,7 @@
 #include <sys/time.h>
 #import <CoreVideo/CVPixelBuffer.h>
 
-extern UIImage *_UICreateScreenUIImage();
-
 @implementation CSRecordViewController
-
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -36,6 +33,8 @@ extern UIImage *_UICreateScreenUIImage();
     CFRelease(_surface);
     [super dealloc];
 }
+
+#pragma mark - UI
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -70,8 +69,14 @@ extern UIImage *_UICreateScreenUIImage();
     [self.view addSubview:_stop];
     // Do any additional setup after loading the view from its nib.
 }
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
 
-- (void)record:(id)sender
+#pragma mark - Starting / Stopping
+
+- (void)record: (id)sender
 {
     [[NSFileManager defaultManager] removeItemAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] error:nil];
 
@@ -146,7 +151,7 @@ extern UIImage *_UICreateScreenUIImage();
     });
 }
 
-- (void)stop:(id)sender {
+- (void)stop: (id)sender {
     _isRecording = NO;
     _stop.enabled = NO;
     
@@ -183,6 +188,9 @@ extern UIImage *_UICreateScreenUIImage();
     _statusLabel.text = timeString;
     [dateFormatter release];
 }
+
+#pragma mark - Capturing
+
 - (void)createScreenSurface
 {
     unsigned pixelFormat = 0x42475241;//'ARGB';
@@ -199,15 +207,16 @@ extern UIImage *_UICreateScreenUIImage();
                                 nil];
     _surface = IOSurfaceCreate((CFDictionaryRef)properties);
 }
+
 - (void)captureShot:(CMTime)frameTime
 {
     if(!_surface)
         [self createScreenSurface];
-
+    
     IOSurfaceLock(_surface, 0, nil);
     CARenderServerRenderDisplay(0, CFSTR("LCD"), _surface, 0, 0);
     IOSurfaceUnlock(_surface, 0, 0);
-
+    
     void *baseAddr = IOSurfaceGetBaseAddress(_surface);
     int totalBytes = _bytesPerRow * _height;
     void *rawData = malloc(totalBytes);
@@ -215,9 +224,9 @@ extern UIImage *_UICreateScreenUIImage();
     
     int thisShot = shotcount;
     shotcount++;
-
+    
     dispatch_async(dispatch_get_main_queue(), ^{
-
+        
         CVPixelBufferRef pixelBuffer = NULL;
         if(!_pixelBufferAdaptor.pixelBufferPool){
             NSLog(@"skipping frame: %lld", frameTime.value);
@@ -251,25 +260,15 @@ extern UIImage *_UICreateScreenUIImage();
             [_pixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:frameTime];
             CVPixelBufferRelease(pixelBuffer);
             [_pixelBufferLock unlock];
-        
+            
             //last capture finishes encoding
             if(!_isRecording && thisShot == (shotcount - 1))
                 [self finishEncoding];
         });
     });
 }
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
+#pragma mark - Encoding
 - (void)setupVideoContext
 {
     CGRect screenRect = [UIScreen mainScreen].bounds;
