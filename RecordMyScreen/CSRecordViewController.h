@@ -19,8 +19,6 @@
     NSTimer *_recordingTimer;
     NSDate *_recordStartDate;
     AVAudioRecorder *_audioRecorder;
-    NSString *_shotdir;
-    int shotcount;
     
     //surface
     IOSurfaceRef _surface;

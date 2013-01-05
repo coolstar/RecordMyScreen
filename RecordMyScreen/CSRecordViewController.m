@@ -88,7 +88,6 @@
     _stop.enabled = YES;
     _record.enabled = NO;
     
-    shotcount = 0;
     NSDictionary *audioSettings = @{
         AVNumberOfChannelsKey : [NSNumber numberWithInt:2]
     };
@@ -147,6 +146,10 @@
                 lastCapture = currentTime;
             }
         }
+        
+        dispatch_async(_video_queue, ^{
+            [self finishEncoding];
+        });
         
     });
 }
@@ -222,9 +225,6 @@
     void *rawData = malloc(totalBytes);
     memcpy(rawData, baseAddr, totalBytes);
     
-    int thisShot = shotcount;
-    shotcount++;
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         
         CVPixelBufferRef pixelBuffer = NULL;
@@ -260,10 +260,6 @@
             [_pixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:frameTime];
             CVPixelBufferRelease(pixelBuffer);
             [_pixelBufferLock unlock];
-            
-            //last capture finishes encoding
-            if(!_isRecording && thisShot == (shotcount - 1))
-                [self finishEncoding];
         });
     });
 }
