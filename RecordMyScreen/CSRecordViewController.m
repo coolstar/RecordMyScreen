@@ -87,6 +87,10 @@
     _recordStartDate = [[NSDate date] retain];
     _stop.enabled = YES;
     _record.enabled = NO;
+	
+	NSError *sessionError = nil;
+	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDuckOthers error:&sessionError];
+	[[AVAudioSession sharedInstance] setActive:YES error:&sessionError];
     
     NSDictionary *audioSettings = @{
         AVNumberOfChannelsKey : [NSNumber numberWithInt:2]
