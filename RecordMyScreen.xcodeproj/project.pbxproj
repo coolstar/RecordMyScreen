@@ -31,6 +31,8 @@
 		389BCD0A169010CF00877CA5 /* CSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 389BCD09169010CF00877CA5 /* CSAppDelegate.m */; };
 		389BCD2E1690113900877CA5 /* CSRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 389BCD2C1690113900877CA5 /* CSRecordViewController.m */; };
 		389BCD2F1690113900877CA5 /* CSRecordViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 389BCD2D1690113900877CA5 /* CSRecordViewController.xib */; };
+		8ECF16F31697E07400DBA7D2 /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8ECF16F21697E07400DBA7D2 /* GraphicsServices.framework */; };
+		8ECF16F51697E0A000DBA7D2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8ECF16F41697E0A000DBA7D2 /* QuartzCore.framework */; };
 		DF80BC12169482EA00EA056A /* CSRecordViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */; };
 /* End PBXBuildFile section */
 
@@ -87,6 +89,8 @@
 		389BCD2B1690113900877CA5 /* CSRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRecordViewController.h; sourceTree = "<group>"; };
 		389BCD2C1690113900877CA5 /* CSRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRecordViewController.m; sourceTree = "<group>"; };
 		389BCD2D1690113900877CA5 /* CSRecordViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CSRecordViewController.xib; sourceTree = "<group>"; };
+		8ECF16F21697E07400DBA7D2 /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = SDKROOT; };
+		8ECF16F41697E0A000DBA7D2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CSRecordViewController_iPad.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -95,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8ECF16F51697E0A000DBA7D2 /* QuartzCore.framework in Frameworks */,
 				382758F41690F43B000D537C /* AVFoundation.framework in Frameworks */,
 				389BCCFA169010CF00877CA5 /* UIKit.framework in Frameworks */,
 				389BCCFC169010CF00877CA5 /* Foundation.framework in Frameworks */,
@@ -102,6 +107,7 @@
 				382758FC1692565F000D537C /* CoreMedia.framework in Frameworks */,
 				382758F91692563A000D537C /* CoreVideo.framework in Frameworks */,
 				38114EDD1692F83C00BE64B4 /* MediaPlayer.framework in Frameworks */,
+				8ECF16F31697E07400DBA7D2 /* GraphicsServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,6 +197,8 @@
 		389BCCF8169010CF00877CA5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8ECF16F41697E0A000DBA7D2 /* QuartzCore.framework */,
+				8ECF16F21697E07400DBA7D2 /* GraphicsServices.framework */,
 				38114EDB1692F82E00BE64B4 /* MediaPlayer.framework */,
 				382758FA16925657000D537C /* CoreMedia.framework */,
 				382758F716925634000D537C /* CoreVideo.framework */,
@@ -421,6 +429,10 @@
 		389BCD28169010CF00877CA5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RecordMyScreen/RecordMyScreen-Prefix.pch";
 				INFOPLIST_FILE = "RecordMyScreen/RecordMyScreen-Info.plist";
@@ -433,6 +445,10 @@
 		389BCD29169010CF00877CA5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RecordMyScreen/RecordMyScreen-Prefix.pch";
 				INFOPLIST_FILE = "RecordMyScreen/RecordMyScreen-Info.plist";
