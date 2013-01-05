@@ -13,7 +13,6 @@
     UISegmentedControl *_record,*_stop;
     IBOutlet UIImageView *_recordbar;
     IBOutlet UILabel *_statusLabel;
-    IBOutlet UIProgressView *_progressView;
     NSTimer *_recordingTimer;
     NSDate *_recordStartDate;
     AVAudioRecorder *_audioRecorder;

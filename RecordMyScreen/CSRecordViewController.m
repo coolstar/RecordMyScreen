@@ -47,8 +47,6 @@ void CSPixelBufferReleaseCallBack(void* releaseRefCon,const void *baseAddress){
     _stop.enabled = NO;
     [_stop addTarget:self action:@selector(stop:) forControlEvents:UIControlEventValueChanged];
     
-    _progressView.hidden = YES;
-    
     
     // Check for iPad for layout
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
@@ -102,7 +100,6 @@ void CSPixelBufferReleaseCallBack(void* releaseRefCon,const void *baseAddress){
     _recordingTimer = nil;
     
     _statusLabel.text = @"Waiting for encoder to finish...";
-    _progressView.hidden = NO;
 
     [_audioRecorder stop];
     [_audioRecorder release];
@@ -116,7 +113,6 @@ void CSPixelBufferReleaseCallBack(void* releaseRefCon,const void *baseAddress){
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             _statusLabel.text = @"Ready";
-            _progressView.hidden = YES;
             _record.enabled = YES;
             [_recordStartDate release];
             _recordStartDate = nil;
@@ -196,8 +192,8 @@ void CSPixelBufferReleaseCallBack(void* releaseRefCon,const void *baseAddress){
     
     IOSurfaceUnlock(screenSurface, kIOSurfaceLockReadOnly, &aseed); //stop locking these things! seriously!
     
-    CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, IOSurfaceGetBaseAddress(destSurf), (width*height*4), NULL);
-    CGColorSpaceRef devicergb = CGColorSpaceCreateDeviceRGB();
+    //CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, IOSurfaceGetBaseAddress(destSurf), (width*height*4), NULL);
+    //CGColorSpaceRef devicergb = CGColorSpaceCreateDeviceRGB();
     //CGImageRef cgImage = CGImageCreate(width, height, 8, 8*4, IOSurfaceGetBytesPerRow(destSurf), devicergb, kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little, provider, NULL, YES, kCGRenderingIntentDefault);
     
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -206,10 +202,10 @@ void CSPixelBufferReleaseCallBack(void* releaseRefCon,const void *baseAddress){
                              nil];
     
     CVPixelBufferRef pixelBuffer = nil;
-    CVReturn status = CVPixelBufferCreateWithBytes(kCFAllocatorDefault, width, height, kCVPixelFormatType_32ARGB, IOSurfaceGetBaseAddress(destSurf), IOSurfaceGetBytesPerRow(destSurf), CSPixelBufferReleaseCallBack, destSurf, (CFDictionaryRef)options, &pixelBuffer);
+    CVPixelBufferCreateWithBytes(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, IOSurfaceGetBaseAddress(destSurf), IOSurfaceGetBytesPerRow(destSurf), CSPixelBufferReleaseCallBack, destSurf, (CFDictionaryRef)options, &pixelBuffer);
 
-    CGColorSpaceRelease(devicergb);
-    CGDataProviderRelease(provider);
+    //CGColorSpaceRelease(devicergb);
+    //CGDataProviderRelease(provider);
     
     CFRelease(outAcc);
     
@@ -302,41 +298,6 @@ void CSPixelBufferReleaseCallBack(void* releaseRefCon,const void *baseAddress){
     [videoWriter release];
     [writerInput release];
     isdone = YES;
-}
-
-- (CVPixelBufferRef) pixelBufferFromCGImage:(CGImageRef)image size:(CGSize)size
-{
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
-                             [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
-                             [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey,
-                             nil];
-    CVPixelBufferRef pxbuffer = NULL;
-    CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault, size.width,
-                                          size.height, kCVPixelFormatType_32ARGB, (CFDictionaryRef) options,
-                                          &pxbuffer);
-    NSParameterAssert(status == kCVReturnSuccess && pxbuffer != NULL);
-    
-    CVPixelBufferLockBaseAddress(pxbuffer, 0);
-    void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
-    NSParameterAssert(pxdata != NULL);
-    
-    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(pxdata, size.width,
-                                                 size.height, 8, 4*size.width, rgbColorSpace,
-                                                 kCGImageAlphaNoneSkipFirst);
-    NSParameterAssert(context);
-    
-    //CGContextTranslateCTM(context, 0, CGImageGetHeight(image));
-    //CGContextScaleCTM(context, 1.0, -1.0);//Flip vertically to account for different origin
-    
-    CGContextDrawImage(context, CGRectMake(0, 0, CGImageGetWidth(image),
-                                           CGImageGetHeight(image)), image);
-    CGColorSpaceRelease(rgbColorSpace);
-    CGContextRelease(context);
-    
-    CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
-    
-    return pxbuffer;
 }
 
 @end
