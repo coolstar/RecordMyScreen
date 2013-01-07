@@ -276,8 +276,16 @@
 {
     CGRect screenRect = [UIScreen mainScreen].bounds;
     float scale = [UIScreen mainScreen].scale;
-    _width = screenRect.size.width * scale;
-    _height = screenRect.size.height * scale;
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        // iPhone frame buffer is Portrait
+        _width = screenRect.size.width * scale;
+        _height = screenRect.size.height * scale;
+    } else {
+        // iPad frame buffer is Landscape
+        _width = screenRect.size.height * scale;
+        _height = screenRect.size.width * scale;
+    }
     
     NSString *outPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"];
     

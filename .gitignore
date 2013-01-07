@@ -2,3 +2,6 @@
 xcuserdata/
 build/
 DerivedData/
+*.xcuserstate
+
+RecordMyScreen.xcodeproj/project.xcworkspace/xcuserdata/truehybridx.xcuserdatad/UserInterfaceState.xcuserstate
