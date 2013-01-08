@@ -78,33 +78,47 @@
 
 - (void)record: (id)sender
 {
+    // Remove the old video
     [[NSFileManager defaultManager] removeItemAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] error:nil];
-
+    
+    // if the AVAssetWriter is NOT valid, setup video context
     if(!_videoWriter)
         [self setupVideoContext];
     
+    // Update the UI
     _statusLabel.text = @"00:00:00";
     _recordStartDate = [[NSDate date] retain];
     _stop.enabled = YES;
     _record.enabled = NO;
 	
+    // Setup to be able to record global sounds (preexisting app sounds)
 	NSError *sessionError = nil;
     if ([[AVAudioSession sharedInstance] respondsToSelector:@selector(setCategory:withOptions:error:)])
         [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDuckOthers error:&sessionError];
     else
         [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:&sessionError];
+    
+    // Set the audio session to be active
 	[[AVAudioSession sharedInstance] setActive:YES error:&sessionError];
     
+    // Set the number of audio channels
     NSDictionary *audioSettings = @{
-        AVNumberOfChannelsKey : [NSNumber numberWithInt:2]
+    AVNumberOfChannelsKey : [NSNumber numberWithInt:2]
     };
+    
+    // Set output path of the audio file
     NSError *error = nil;
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/audio.caf"];
+    
+    // Initialize the audio recorder
     _audioRecorder = [[AVAudioRecorder alloc] initWithURL:[NSURL fileURLWithPath:path] settings:audioSettings error:&error];
     [_audioRecorder setDelegate:self];
     [_audioRecorder prepareToRecord];
+    
+    // Start recording :P
     [_audioRecorder record];
     
+    // Set timer to update the record time label
     _recordingTimer = [NSTimer scheduledTimerWithTimeInterval:1
                                                        target:self
                                                      selector:@selector(updateTimer:)
@@ -113,7 +127,7 @@
     
     _isRecording = TRUE;
     
-    //capture loop
+    //capture loop (In another thread)
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         int targetFPS = _fps;
         int msBeforeNextCapture = 1000 / targetFPS;
@@ -128,7 +142,7 @@
         
         int lastFrame = -1;
         while(_isRecording)
-        {   
+        {
             //time passed since last capture
             gettimeofday(&currentTime, NULL);
             
@@ -137,23 +151,28 @@
             
             long int diff = (currentTime.tv_usec + (1000 * currentTime.tv_sec) ) - (lastCapture.tv_usec + (1000 * lastCapture.tv_sec) );
             
+            // if enough time has passed, capture another shot
             if(diff >= msBeforeNextCapture)
             {
                 //time since start
                 long int msSinceStart = (currentTime.tv_usec + (1000 * currentTime.tv_sec) ) - (startTime.tv_usec + (1000 * startTime.tv_sec) );
                 
+                // Generate the frame number
                 int frameNumber = msSinceStart / msBeforeNextCapture;
                 CMTime presentTime;
                 presentTime = CMTimeMake(frameNumber, targetFPS);
                 
+                // Frame number cannot be last frames number :P
                 NSParameterAssert(frameNumber != lastFrame);
                 lastFrame = frameNumber;
-                    
+                
+                // Capture next shot and repeat
                 [self captureShot:presentTime];
                 lastCapture = currentTime;
             }
         }
         
+        // finish encoding, using the video_queue thread
         dispatch_async(_video_queue, ^{
             [self finishEncoding];
         });
@@ -162,17 +181,27 @@
 }
 
 - (void)stop: (id)sender {
+    // Set the flag to stop recording
     _isRecording = NO;
+    
+    // Disable the stop button
     _stop.enabled = NO;
     
+    // Invalidate the recording time
     [_recordingTimer invalidate];
     _recordingTimer = nil;
     
+    // Announce Encoding will begin
     _statusLabel.text = @"Encoding Movie...";
+    
+    // Show progress view
     _progressView.hidden = NO;
+    
+    // Stop the audio recording
     [_audioRecorder stop];
     [_audioRecorder release];
-
+    
+    // Update the UI for another round
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
     dispatch_async(queue, ^{
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -188,12 +217,21 @@
 }
 
 - (void)updateTimer:(NSTimer *)timer {
+    // Get the current date
     NSDate *currentDate = [NSDate date];
+    
+    // Current time
     NSTimeInterval timeInterval = [currentDate timeIntervalSinceDate:_recordStartDate];
+    
+    // Get date from when the recording started
     NSDate *timerDate = [NSDate dateWithTimeIntervalSince1970:timeInterval];
+    
+    // Make a date formatter (Possibly reuse instead of creating each time)
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"HH:mm:ss"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0.0]];
+    
+    // Set the current time since recording began
     NSString *timeString=[dateFormatter stringFromDate:timerDate];
     _statusLabel.text = timeString;
     [dateFormatter release];
@@ -203,9 +241,16 @@
 
 - (void)createScreenSurface
 {
+    // Pixel format for Alpha Red Green Blue
     unsigned pixelFormat = 0x42475241;//'ARGB';
+    
+    // 4 Bytes per pixel
     int bytesPerElement = 4;
+    
+    // Bytes per row
     _bytesPerRow = (bytesPerElement * _width);
+    
+    // Properties include: SurfaceIsGlobal, BytesPerElement, BytesPerRow, SurfaceWidth, SurfaceHeight, PixelFormat, SurfaceAllocSize (space for the entire surface)
     NSDictionary *properties = [NSDictionary dictionaryWithObjectsAndKeys:
                                 [NSNumber numberWithBool:YES], kIOSurfaceIsGlobal,
                                 [NSNumber numberWithInt:bytesPerElement], kIOSurfaceBytesPerElement,
@@ -215,18 +260,25 @@
                                 [NSNumber numberWithUnsignedInt:pixelFormat], kIOSurfacePixelFormat,
                                 [NSNumber numberWithInt:_bytesPerRow * _height], kIOSurfaceAllocSize,
                                 nil];
+    
+    // This is the current surface
     _surface = IOSurfaceCreate((CFDictionaryRef)properties);
 }
 
 - (void)captureShot:(CMTime)frameTime
 {
+    // Create an IOSurfaceRef if one does not exist
     if(!_surface)
         [self createScreenSurface];
     
+    // Lock the surface from other threads
     IOSurfaceLock(_surface, 0, nil);
+    // Take currently displayed image from the LCD
     CARenderServerRenderDisplay(0, CFSTR("LCD"), _surface, 0, 0);
+    // Unlock the surface
     IOSurfaceUnlock(_surface, 0, 0);
     
+    // Make a raw memory copy of the surface
     void *baseAddr = IOSurfaceGetBaseAddress(_surface);
     int totalBytes = _bytesPerRow * _height;
     void *rawData = malloc(totalBytes);
@@ -235,6 +287,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         
         CVPixelBufferRef pixelBuffer = NULL;
+        
         if(!_pixelBufferAdaptor.pixelBufferPool){
             NSLog(@"skipping frame: %lld", frameTime.value);
             free(rawData);
@@ -260,12 +313,16 @@
         CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
         
         dispatch_async(_video_queue, ^{
+            // Wait until AVAssetWriterInput is ready
             while(!_videoWriterInput.readyForMoreMediaData)
                 usleep(1000);
             
+            // Lock from other threads
             [_pixelBufferLock lock];
+            // Add the new frame to the video
             [_pixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:frameTime];
             CVPixelBufferRelease(pixelBuffer);
+            // Unlock
             [_pixelBufferLock unlock];
         });
     });
@@ -274,9 +331,11 @@
 #pragma mark - Encoding
 - (void)setupVideoContext
 {
+    // Get the screen rect and scale
     CGRect screenRect = [UIScreen mainScreen].bounds;
     float scale = [UIScreen mainScreen].scale;
     
+    // setup the width and height of the framebuffer for the device
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         // iPhone frame buffer is Portrait
         _width = screenRect.size.width * scale;
@@ -287,42 +346,52 @@
         _height = screenRect.size.width * scale;
     }
     
+    // Get the output file path
     NSString *outPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"];
     
     NSError *error = nil;
     
+    // Setup AVAssetWriter with the output path
     _videoWriter = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath:outPath]
-                                                           fileType:AVFileTypeMPEG4
-                                                              error:&error];
-    
+                                             fileType:AVFileTypeMPEG4
+                                                error:&error];
+    // check for errors
     if(error)
     {
         NSLog(@"error: %@", error);
         return;
     }
+    
+    // Makes sure AVAssetWriter is valid (check check check)
     NSParameterAssert(_videoWriter);
     
+    // Setup AverageBitRate, FrameInterval, and ProfileLevel (Compression Properties)
     NSMutableDictionary * compressionProperties = [NSMutableDictionary dictionary];
     [compressionProperties setObject: [NSNumber numberWithInt: _kbps * 1000] forKey: AVVideoAverageBitRateKey];
     [compressionProperties setObject: [NSNumber numberWithInt: _fps] forKey: AVVideoMaxKeyFrameIntervalKey];
     [compressionProperties setObject: AVVideoProfileLevelH264Main41 forKey: AVVideoProfileLevelKey];
     
+    // Setup output settings, Codec, Width, Height, Compression
     NSMutableDictionary *outputSettings = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                   AVVideoCodecH264, AVVideoCodecKey,
-                                   [NSNumber numberWithInt:_width], AVVideoWidthKey,
-                                   [NSNumber numberWithInt:_height], AVVideoHeightKey,
-                                   compressionProperties, AVVideoCompressionPropertiesKey,
-                                   nil];
+                                           AVVideoCodecH264, AVVideoCodecKey,
+                                           [NSNumber numberWithInt:_width], AVVideoWidthKey,
+                                           [NSNumber numberWithInt:_height], AVVideoHeightKey,
+                                           compressionProperties, AVVideoCompressionPropertiesKey,
+                                           nil];
     
     NSParameterAssert([_videoWriter canApplyOutputSettings:outputSettings forMediaType:AVMediaTypeVideo]);
     
+    // Get a AVAssetWriterInput
+    // Add the output settings
     _videoWriterInput = [[AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
-                                                                          outputSettings:outputSettings] retain];
-
+                                                            outputSettings:outputSettings] retain];
+    
+    // Check if AVAssetWriter will take an AVAssetWriterInput
     NSParameterAssert(_videoWriterInput);
     NSParameterAssert([_videoWriter canAddInput:_videoWriterInput]);
     [_videoWriter addInput:_videoWriterInput];
     
+    // Setup buffer attributes, PixelFormatType, PixelBufferWidth, PixelBufferHeight, PixelBufferMemoryAlocator
     NSDictionary *bufferAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                       [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], kCVPixelBufferPixelFormatTypeKey,
                                       [NSNumber numberWithInt:_width], kCVPixelBufferWidthKey,
@@ -330,8 +399,9 @@
                                       kCFAllocatorDefault, kCVPixelBufferMemoryAllocatorKey,
                                       nil];
     
+    // Get AVAssetWriterInputPixelBufferAdaptor with the buffer attributes
     _pixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:_videoWriterInput
-                                                                                                                     sourcePixelBufferAttributes:bufferAttributes];
+                                                                                           sourcePixelBufferAttributes:bufferAttributes];
     [_pixelBufferAdaptor retain];
     
     //FPS
@@ -346,12 +416,17 @@
     NSParameterAssert(_pixelBufferAdaptor.pixelBufferPool != NULL);
     
 }
+
+
 -(void)finishEncoding
 {
-
+    // Tell the AVAssetWriterInput were done appending buffers
     [_videoWriterInput markAsFinished];
+    
+    // Tell the AVAssetWriter to finish and close the file
     [_videoWriter finishWriting];
     
+    // Make objects go away
     [_videoWriter release];
     [_videoWriterInput release];
     [_pixelBufferAdaptor release];
