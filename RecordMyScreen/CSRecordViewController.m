@@ -43,6 +43,7 @@
     _record.momentary = YES;
     _record.segmentedControlStyle = UISegmentedControlStyleBar;
     _record.tintColor = [UIColor greenColor];
+    [_record setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin];
     [_record addTarget:self action:@selector(record:) forControlEvents:UIControlEventValueChanged];
     
     _stop = [[[UISegmentedControl alloc] initWithItems:@[@"Stop"]] autorelease];
@@ -50,6 +51,7 @@
     _stop.segmentedControlStyle = UISegmentedControlStyleBar;
     _stop.tintColor = [UIColor redColor];
     _stop.enabled = NO;
+    [_stop setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin];
     [_stop addTarget:self action:@selector(stop:) forControlEvents:UIControlEventValueChanged];
     
     _progressView.hidden = YES;
