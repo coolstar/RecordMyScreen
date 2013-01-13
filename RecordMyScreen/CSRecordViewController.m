@@ -223,29 +223,52 @@
     if(!_surface)
         [self createScreenSurface];
     
+    static NSMutableArray * buffers = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        buffers = [NSMutableArray array];
+    });
+    
     IOSurfaceLock(_surface, 0, nil);
     CARenderServerRenderDisplay(0, CFSTR("LCD"), _surface, 0, 0);
     IOSurfaceUnlock(_surface, 0, 0);
     
     void *baseAddr = IOSurfaceGetBaseAddress(_surface);
     int totalBytes = _bytesPerRow * _height;
-    void *rawData = malloc(totalBytes);
-    memcpy(rawData, baseAddr, totalBytes);
+    
+    //void *rawData = malloc(totalBytes);
+    //memcpy(rawData, baseAddr, totalBytes);
+    NSMutableData * rawDataObj = nil;
+    if (buffers.count == 0)
+        rawDataObj = [NSMutableData dataWithBytes:baseAddr length:totalBytes];
+    else @synchronized(buffers) {
+        rawDataObj = [buffers lastObject];
+        memcpy((void *)[rawDataObj bytes], baseAddr, totalBytes);
+        //[rawDataObj replaceBytesInRange:NSMakeRange(0, rawDataObj.length) withBytes:baseAddr length:totalBytes];
+        [buffers removeLastObject];
+    }
     
     dispatch_async(dispatch_get_main_queue(), ^{
         
-        CVPixelBufferRef pixelBuffer = NULL;
         if(!_pixelBufferAdaptor.pixelBufferPool){
             NSLog(@"skipping frame: %lld", frameTime.value);
-            free(rawData);
+            //free(rawData);
+            @synchronized(buffers) {
+                //[buffers addObject:rawDataObj];
+            }
             return;
         }
         
-        NSParameterAssert(_pixelBufferAdaptor.pixelBufferPool != NULL);
-        [_pixelBufferLock lock];
-        CVPixelBufferPoolCreatePixelBuffer (kCFAllocatorDefault, _pixelBufferAdaptor.pixelBufferPool, &pixelBuffer);
-        [_pixelBufferLock unlock];
-        NSParameterAssert(pixelBuffer != NULL);
+        static CVPixelBufferRef pixelBuffer = NULL;
+        
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            NSParameterAssert(_pixelBufferAdaptor.pixelBufferPool != NULL);
+            [_pixelBufferLock lock];
+            CVPixelBufferPoolCreatePixelBuffer (kCFAllocatorDefault, _pixelBufferAdaptor.pixelBufferPool, &pixelBuffer);
+            [_pixelBufferLock unlock];
+            NSParameterAssert(pixelBuffer != NULL);
+        });
         
         //unlock pixel buffer data
         CVPixelBufferLockBaseAddress(pixelBuffer, 0);
@@ -253,8 +276,11 @@
         NSParameterAssert(pixelData != NULL);
         
         //copy over raw image data and free
-        memcpy(pixelData, rawData, totalBytes);
-        free(rawData);
+        memcpy(pixelData, [rawDataObj bytes], totalBytes);
+        //free(rawData);
+        @synchronized(buffers) {
+            [buffers addObject:rawDataObj];
+        }
         
         //unlock pixel buffer data
         CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
@@ -265,7 +291,7 @@
             
             [_pixelBufferLock lock];
             [_pixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:frameTime];
-            CVPixelBufferRelease(pixelBuffer);
+            //CVPixelBufferRelease(pixelBuffer);
             [_pixelBufferLock unlock];
         });
     });
