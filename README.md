@@ -31,7 +31,7 @@ Notes:
 
 * iPhone 2G - Not supported: iOS 3 is too ancient, armv6, way too slow, no h.264 encoding support
 * iPhone 3G - Not supported: armv6, too slow, does this even support h.264 encoding?
-* iPhone 5 - Crashes due to bug #15
+* iPhone 5 - Crashes due to Issue [#15](https://github.com/coolstar/RecordMyScreen/issues/15)
 
 iPod touch
 
@@ -50,4 +50,4 @@ iPad's
 1. iPad 1 (maybe, test please?)
 2. iPad 2
 
-Note: Retina Display iPads are currently unsupported due to their weird framebuffer.
+Note: iPads with Retina Display are not supported due to Issue [#8](https://github.com/coolstar/RecordMyScreen/issues/8)
