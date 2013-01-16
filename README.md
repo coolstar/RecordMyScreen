@@ -26,12 +26,12 @@ iPhones
 1. iPhone 3GS
 2. iPhone 4
 3. iPhone 4S
-4. iPhone 5
 
 Notes:
 
 * iPhone 2G - Not supported: iOS 3 is too ancient, armv6, way too slow, no h.264 encoding support
 * iPhone 3G - Not supported: armv6, too slow, does this even support h.264 encoding?
+* iPhone 5 - Crashes due to bug #15
 
 iPod touch
 
