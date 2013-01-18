@@ -21,9 +21,16 @@
     if (self) {
         self.title = NSLocalizedString(@"Recordings", @"");
         self.tabBarItem = [[[UITabBarItem alloc] initWithTitle:self.title image:[UIImage imageNamed:@"list"] tag:0] autorelease];
+        self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEdit:)] autorelease];
+        _folderItems = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/"] error:nil] mutableCopy];
         // Custom initialization
     }
     return self;
+}
+
+- (void)toggleEdit:(id)sender {
+    [self.tableView setEditing:!self.tableView.isEditing animated:YES];
+    self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:self.tableView.isEditing? UIBarButtonSystemItemDone : UIBarButtonSystemItemEdit target:self action:@selector(toggleEdit:)] autorelease];
 }
 
 - (void)viewDidLoad
@@ -54,9 +61,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    if ([[NSFileManager defaultManager] fileExistsAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"]])
-        return 1;
-    return 0;
+    return [_folderItems count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -64,15 +69,37 @@
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
     }
-    cell.textLabel.text = @"video.mp4";
+    cell.textLabel.text = [_folderItems objectAtIndex:indexPath.row];
     cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-    //NSNumber *size = [[[NSFileManager defaultManager] attributesOfItemAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] error:nil] objectForKey:@"NSFileSize"];
-    //cell.detailTextLabel.text = [NSString stringWithFormat:@"%d",size.intValue]; //dirty but this should be replaced anyways
+    
+    NSString *fileName = [_folderItems objectAtIndex:indexPath.row];
+    NSString *fileDirectory = [@"Documents/" stringByAppendingString:fileName];
+    
+    NSString *filePath = [NSHomeDirectory() stringByAppendingPathComponent:fileDirectory];
+    
+    unsigned long long size = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil] fileSize];
+    cell.detailTextLabel.text = [self humanReadableStringFromBytes:size];
     // Configure the cell...
     
     return cell;
+}
+
+- (NSString *)humanReadableStringFromBytes:(unsigned long long)byteCount
+{
+    
+    float numberOfBytes = byteCount;
+    int multiplyFactor = 0;
+    
+    NSArray *tokens = [NSArray arrayWithObjects:@"bytes",@"KB",@"MB",@"GB",@"TB",@"PB",@"EB",@"ZB",@"YB",nil];
+    
+    while (numberOfBytes > 1024) {
+        numberOfBytes /= 1024;
+        multiplyFactor++;
+    }
+    
+    return [NSString stringWithFormat:@"%4.2f %@",numberOfBytes, [tokens objectAtIndex:multiplyFactor]];
 }
 
 /*
@@ -84,19 +111,22 @@
 }
 */
 
-/*
+
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
+        // Delete the row from the data source and filesystem
+        NSString *fileName = [_folderItems objectAtIndex:indexPath.row];
+        NSString *fileDirectory = [@"Documents/" stringByAppendingString:fileName];
+        
+        NSURL *fileURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:fileDirectory]];
+        [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+        [_folderItems removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+    }    
 }
-*/
+
 
 /*
 // Override to support rearranging the table view.
@@ -117,23 +147,39 @@
 #pragma mark - Table view delegate
 
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    UIDocumentInteractionController *interactionController = [[UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"]]] retain];
+    NSString *fileName = [_folderItems objectAtIndex:indexPath.row];
+    NSString *fileDirectory = [@"Documents/" stringByAppendingString:fileName];
+    
+    NSURL *fileURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:fileDirectory]];
+    
+    UIDocumentInteractionController *interactionController = [[UIDocumentInteractionController interactionControllerWithURL:fileURL] retain];
     [interactionController presentOptionsMenuFromRect:[tableView cellForRowAtIndexPath:indexPath].frame inView:self.view animated:YES];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Navigation logic may go here. Create and push another view controller.
+    NSString *fileName = [_folderItems objectAtIndex:indexPath.row];
+    NSString *fileDirectory = [@"Documents/" stringByAppendingString:fileName];
     
-    MPMoviePlayerViewController *moviePlayerController = [[[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"]]] autorelease];
+    NSURL *fileURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:fileDirectory]];
+    
+    MPMoviePlayerViewController *moviePlayerController = [[[MPMoviePlayerViewController alloc] initWithContentURL:fileURL] autorelease];
     [moviePlayerController.moviePlayer prepareToPlay];
      // ...
      // Pass the selected object to the new view controller.
     [self presentMoviePlayerViewControllerAnimated:moviePlayerController];
 }
 
--(void)viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
+    [_folderItems release];
+    _folderItems = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/"] error:nil] mutableCopy];
     [self.tableView reloadData];
+}
+
+- (void)dealloc {
+    [_folderItems release];
+    [super dealloc];
 }
 
 @end

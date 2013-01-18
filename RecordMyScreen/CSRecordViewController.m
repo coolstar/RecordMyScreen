@@ -459,8 +459,6 @@
     _videoWriter = nil;
     _videoWriterInput = nil;
     _pixelBufferAdaptor = nil;
-    
-    NSLog (@"Done");
 }
 
 

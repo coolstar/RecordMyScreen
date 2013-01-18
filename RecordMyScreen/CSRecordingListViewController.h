@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CSRecordingListViewController : UITableViewController
+@interface CSRecordingListViewController : UITableViewController {
+    NSMutableArray *_folderItems;
+}
 
 @end
