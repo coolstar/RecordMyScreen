@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PreferenceSpecifiers</key>
+	<array>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Recording Settings</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Record</string>
+			<key>Key</key>
+			<string>record</string>
+			<key>DefaultValue</key>
+			<integer>0</integer>
+			<key>Titles</key>
+			<array>
+				<string>Screen Only</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Video Settings</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Video Size</string>
+			<key>Key</key>
+			<string>vidsize</string>
+			<key>DefaultValue</key>
+			<integer>1</integer>
+			<key>Titles</key>
+			<array>
+				<string>Native</string>
+				<string>Half</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<integer>1</integer>
+				<integer>0</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Audio Settings</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Sample Rate</string>
+			<key>Key</key>
+			<string>samplerate</string>
+			<key>DefaultValue</key>
+			<integer>44100</integer>
+			<key>Titles</key>
+			<array>
+				<string>44100 Hz</string>
+				<string>22050 Hz</string>
+				<string>16000 Hz</string>
+				<string>11025 Hz</string>
+				<string>8000 Hz</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<integer>44100</integer>
+				<integer>22050</integer>
+				<integer>16000</integer>
+				<integer>11025</integer>
+				<integer>8000</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Channels</string>
+			<key>Key</key>
+			<string>channels</string>
+			<key>DefaultValue</key>
+			<integer>2</integer>
+			<key>Titles</key>
+			<array>
+				<string>Mono</string>
+				<string>Stereo</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+		</dict>
+	</array>
+	<key>StringsTable</key>
+	<string>Root</string>
+</dict>
+</plist>

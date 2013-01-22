@@ -1,0 +1,3 @@
+[submodule "InAppSettingsKit"]
+	path = InAppSettingsKit
+	url = https://github.com/futuretap/InAppSettingsKit.git

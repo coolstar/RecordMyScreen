@@ -108,8 +108,11 @@
 	[[AVAudioSession sharedInstance] setActive:YES error:&sessionError];
     
     // Set the number of audio channels
+    NSNumber *audioChannels = [[NSUserDefaults standardUserDefaults] objectForKey:@"channels"];
+    NSNumber *sampleRate = [[NSUserDefaults standardUserDefaults] objectForKey:@"samplerate"];
     NSDictionary *audioSettings = @{
-    AVNumberOfChannelsKey : [NSNumber numberWithInt:2]
+    AVNumberOfChannelsKey : audioChannels ? audioChannels : [NSNumber numberWithInt:2],
+    AVSampleRateKey : sampleRate ? sampleRate : [NSNumber numberWithFloat:44100.0f]
     };
     
     // Set output path of the audio file
@@ -281,7 +284,7 @@
     static NSMutableArray * buffers = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        buffers = [NSMutableArray array];
+        buffers = [[NSMutableArray alloc] init];
     });
     
     IOSurfaceLock(_surface, 0, nil);
@@ -298,7 +301,7 @@
     //memcpy(rawData, baseAddr, totalBytes);
     NSMutableData * rawDataObj = nil;
     if (buffers.count == 0)
-        rawDataObj = [NSMutableData dataWithBytes:baseAddr length:totalBytes];
+        rawDataObj = [[NSMutableData dataWithBytes:baseAddr length:totalBytes] retain];
     else @synchronized(buffers) {
         rawDataObj = [buffers lastObject];
         memcpy((void *)[rawDataObj bytes], baseAddr, totalBytes);
@@ -380,6 +383,14 @@
     
     // Get the output file path
     NSString *outPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"];
+    if (![[[NSUserDefaults standardUserDefaults] objectForKey:@"record"] boolValue]){
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"MM:dd:yyyy h:mm:ss a"];
+        NSString *date = [dateFormatter stringFromDate:[NSDate date]];
+        NSString *outName = [NSString stringWithFormat:@"Documents/%@.mp4",date];
+        outPath = [NSHomeDirectory() stringByAppendingPathComponent:outName];
+        [dateFormatter release];
+    }
     
     NSError *error = nil;
     
@@ -404,10 +415,18 @@
     [compressionProperties setObject: AVVideoProfileLevelH264Main41 forKey: AVVideoProfileLevelKey];
     
     // Setup output settings, Codec, Width, Height, Compression
+    int videowidth = _width;
+    int videoheight = _height;
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"vidsize"]) {
+        if (![[[NSUserDefaults standardUserDefaults] objectForKey:@"vidsize"] boolValue]){
+            videowidth /= 2; //If it's set to half-size, divide both by 2.
+            videoheight /= 2;
+        }
+    }
     NSMutableDictionary *outputSettings = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                            AVVideoCodecH264, AVVideoCodecKey,
-                                           [NSNumber numberWithInt:_width], AVVideoWidthKey,
-                                           [NSNumber numberWithInt:_height], AVVideoHeightKey,
+                                           [NSNumber numberWithInt:videowidth], AVVideoWidthKey,
+                                           [NSNumber numberWithInt:videoheight], AVVideoHeightKey,
                                            compressionProperties, AVVideoCompressionPropertiesKey,
                                            nil];
     

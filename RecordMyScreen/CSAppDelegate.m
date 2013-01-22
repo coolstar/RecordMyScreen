@@ -9,6 +9,7 @@
 #import "CSAppDelegate.h"
 #import "CSRecordViewController.h"
 #import "CSRecordingListViewController.h"
+#import "IASKAppSettingsViewController.h"
 
 @implementation CSAppDelegate
 
@@ -23,8 +24,9 @@
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
-    UINavigationController *savedNavVC;
+    UINavigationController *savedNavVC,*settingsNavVC;
     UIViewController *recordVC,*savedVC;
+    IASKAppSettingsViewController *settingsVC;
     
     // Check for iPad
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
@@ -37,8 +39,15 @@
     savedNavVC = [[[UINavigationController alloc] initWithRootViewController:savedVC] autorelease];
     savedNavVC.navigationBar.barStyle = UIBarStyleBlack;
     
+    settingsVC = [[[IASKAppSettingsViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease];
+    settingsVC.title = NSLocalizedString(@"Settings", @"");
+    settingsVC.tabBarItem = [[[UITabBarItem alloc] initWithTitle:settingsVC.title image:[UIImage imageNamed:@"settings"] tag:0] autorelease];
+    settingsVC.showDoneButton = NO;
+    settingsNavVC = [[[UINavigationController alloc] initWithRootViewController:settingsVC] autorelease];
+    settingsNavVC.navigationBar.barStyle = UIBarStyleBlack;
+    
     self.tabBarController = [[[UITabBarController alloc] init] autorelease];
-    self.tabBarController.viewControllers = @[recordVC,savedNavVC];
+    self.tabBarController.viewControllers = @[recordVC,savedNavVC,settingsNavVC];
     self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
     return YES;
