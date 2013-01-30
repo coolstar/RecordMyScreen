@@ -2,7 +2,9 @@
 
 Record the display even on non-jailbroken iPhones.
 
-Licenced with the MIT Licence.
+Licenced with the MIT Licence with the following 2 clauses added onto it:
+You may not use the source code for any commercial product.
+You may use the videos created from RecordMyScreen for commercial use.
 
 ## Credits
 
