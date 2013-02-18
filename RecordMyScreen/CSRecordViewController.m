@@ -158,7 +158,7 @@
             //convert to milliseconds to avoid overflows
             currentTime.tv_usec /= 1000;
             
-            long int diff = (currentTime.tv_usec + (1000 * currentTime.tv_sec) ) - (lastCapture.tv_usec + (1000 * lastCapture.tv_sec) );
+            unsigned long long diff = (currentTime.tv_usec + (1000 * currentTime.tv_sec) ) - (lastCapture.tv_usec + (1000 * lastCapture.tv_sec) );
             
             // if enough time has passed, capture another shot
             if(diff >= msBeforeNextCapture)
