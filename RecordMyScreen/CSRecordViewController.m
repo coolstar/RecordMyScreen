@@ -436,7 +436,10 @@
     // Add the output settings
     _videoWriterInput = [[AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
                                                             outputSettings:outputSettings] retain];
-    
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"vidorientation"]) {
+        float radians = [[[NSUserDefaults standardUserDefaults] objectForKey:@"vidorientation"] floatValue];
+        _videoWriterInput.transform = CGAffineTransformMakeRotation(radians);
+    }
     // Check if AVAssetWriter will take an AVAssetWriterInput
     NSParameterAssert(_videoWriterInput);
     NSParameterAssert([_videoWriter canAddInput:_videoWriterInput]);

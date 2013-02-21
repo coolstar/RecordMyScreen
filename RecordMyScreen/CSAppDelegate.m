@@ -9,6 +9,7 @@
 #import "CSAppDelegate.h"
 #import "CSRecordViewController.h"
 #import "CSRecordingListViewController.h"
+#import "CSCreditsViewController.h"
 #import "IASKAppSettingsViewController.h"
 
 @implementation CSAppDelegate
@@ -24,8 +25,9 @@
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
-    UINavigationController *savedNavVC,*settingsNavVC;
+    UINavigationController *savedNavVC,*settingsNavVC,*creditsNavVC;
     UIViewController *recordVC,*savedVC;
+    UITableViewController *creditsVC;
     IASKAppSettingsViewController *settingsVC;
     
     // Check for iPad
@@ -46,8 +48,12 @@
     settingsNavVC = [[[UINavigationController alloc] initWithRootViewController:settingsVC] autorelease];
     settingsNavVC.navigationBar.barStyle = UIBarStyleBlack;
     
+    creditsVC = [[[CSCreditsViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease];
+    creditsNavVC = [[[UINavigationController alloc] initWithRootViewController:creditsVC] autorelease];
+    creditsNavVC.navigationBar.barStyle = UIBarStyleBlack;
+    
     self.tabBarController = [[[UITabBarController alloc] init] autorelease];
-    self.tabBarController.viewControllers = @[recordVC,savedNavVC,settingsNavVC];
+    self.tabBarController.viewControllers = @[recordVC,savedNavVC,settingsNavVC,creditsNavVC];
     self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
     return YES;

@@ -56,6 +56,30 @@
 		</dict>
 		<dict>
 			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Video Orientation</string>
+			<key>Key</key>
+			<string>vidorientation</string>
+			<key>DefaultValue</key>
+			<integer>0</integer>
+			<key>Titles</key>
+			<array>
+				<string>Portrait</string>
+				<string>Landscape (Home Button To Left)</string>
+				<string>Landscape (Home Button To Right)</string>
+				<string>Portrait (Upside Down)</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<real>1.57079633</real>
+				<string>4.71238898</string>
+				<string>3.14159265</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
 			<string>Audio Settings</string>

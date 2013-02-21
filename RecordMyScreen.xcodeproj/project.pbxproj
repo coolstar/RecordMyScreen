@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3800B57016D1DACC0034E4B4 /* CSCreditsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3800B56F16D1DACC0034E4B4 /* CSCreditsViewController.m */; };
+		3800B59216D5FB8D0034E4B4 /* Credits.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3800B59116D5FB8D0034E4B4 /* Credits.plist */; };
+		3800B59616D6A4090034E4B4 /* team.png in Resources */ = {isa = PBXBuildFile; fileRef = 3800B59416D6A4090034E4B4 /* team.png */; };
+		3800B59716D6A4090034E4B4 /* team@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3800B59516D6A4090034E4B4 /* team@2x.png */; };
 		38114EDD1692F83C00BE64B4 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38114EDB1692F82E00BE64B4 /* MediaPlayer.framework */; };
 		38114EE11693D99800BE64B4 /* lens@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38114EE01693D99800BE64B4 /* lens@2x.png */; };
 		38114EE81693DAC600BE64B4 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 38114EE61693D9F200BE64B4 /* icon.png */; };
@@ -57,6 +61,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3800B56E16D1DACC0034E4B4 /* CSCreditsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSCreditsViewController.h; sourceTree = "<group>"; };
+		3800B56F16D1DACC0034E4B4 /* CSCreditsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSCreditsViewController.m; sourceTree = "<group>"; };
+		3800B59116D5FB8D0034E4B4 /* Credits.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Credits.plist; sourceTree = "<group>"; };
+		3800B59416D6A4090034E4B4 /* team.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = team.png; sourceTree = "<group>"; };
+		3800B59516D6A4090034E4B4 /* team@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "team@2x.png"; sourceTree = "<group>"; };
 		38114EC21692D88A00BE64B4 /* IOBSD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOBSD.h; sourceTree = "<group>"; };
 		38114EC31692D88A00BE64B4 /* IOCFBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOCFBundle.h; sourceTree = "<group>"; };
 		38114EC41692D88A00BE64B4 /* IOCFPlugIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOCFPlugIn.h; sourceTree = "<group>"; };
@@ -170,6 +179,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3800B56C16D1DAAA0034E4B4 /* CSCreditsViewController */ = {
+			isa = PBXGroup;
+			children = (
+				3800B56E16D1DACC0034E4B4 /* CSCreditsViewController.h */,
+				3800B56F16D1DACC0034E4B4 /* CSCreditsViewController.m */,
+			);
+			name = CSCreditsViewController;
+			sourceTree = "<group>";
+		};
 		38114EC01692D88A00BE64B4 /* headers */ = {
 			isa = PBXGroup;
 			children = (
@@ -273,6 +291,7 @@
 			children = (
 				389BCD2A169010FB00877CA5 /* CSRecordViewController */,
 				382758E41690E0A7000D537C /* CSRecordingListController */,
+				3800B56C16D1DAAA0034E4B4 /* CSCreditsViewController */,
 				389BCD08169010CF00877CA5 /* CSAppDelegate.h */,
 				389BCD09169010CF00877CA5 /* CSAppDelegate.m */,
 				389BCD00169010CF00877CA5 /* Supporting Files */,
@@ -300,10 +319,13 @@
 				3844BB9A16982DAF00F326C2 /* list@2x.png */,
 				38E6ECBF16ACB77D000BECC2 /* settings.png */,
 				38E6ECC016ACB77D000BECC2 /* settings@2x.png */,
+				3800B59416D6A4090034E4B4 /* team.png */,
+				3800B59516D6A4090034E4B4 /* team@2x.png */,
 				389BCD01169010CF00877CA5 /* RecordMyScreen-Info.plist */,
 				389BCD02169010CF00877CA5 /* InfoPlist.strings */,
 				389BCD05169010CF00877CA5 /* main.m */,
 				389BCD07169010CF00877CA5 /* RecordMyScreen-Prefix.pch */,
+				3800B59116D5FB8D0034E4B4 /* Credits.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -453,6 +475,9 @@
 				384D7C0B16A9F70E00610DA9 /* Settings.bundle in Resources */,
 				38E6ECC116ACB77D000BECC2 /* settings.png in Resources */,
 				38E6ECC216ACB77D000BECC2 /* settings@2x.png in Resources */,
+				3800B59216D5FB8D0034E4B4 /* Credits.plist in Resources */,
+				3800B59616D6A4090034E4B4 /* team.png in Resources */,
+				3800B59716D6A4090034E4B4 /* team@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,6 +506,7 @@
 				38E6ECB916ACA3CB000BECC2 /* IASKSlider.m in Sources */,
 				38E6ECBA16ACA3CB000BECC2 /* IASKSwitch.m in Sources */,
 				38E6ECBB16ACA3CB000BECC2 /* IASKTextField.m in Sources */,
+				3800B57016D1DACC0034E4B4 /* CSCreditsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

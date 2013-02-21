@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>name</key>
+		<string>CoolStar</string>
+		<key>description</key>
+		<string>Started the project, and created the initial code.</string>
+		<key>twitter</key>
+		<string>coolstarorg</string>
+	</dict>
+	<dict>
+		<key>name</key>
+		<string>ProtoSphere</string>
+		<key>description</key>
+		<string>Helped transition to encoding the video on-the-fly</string>
+		<key>twitter</key>
+		<string>protosphere7</string>
+	</dict>
+	<dict>
+		<key>name</key>
+		<string>John Coates</string>
+		<key>description</key>
+		<string>Improved the framerate of the video captured, fixed the screen tearing, and made RecordMyScreen usable on &lt;= A4</string>
+		<key>twitter</key>
+		<string>punksomething</string>
+	</dict>
+	<dict>
+		<key>name</key>
+		<string>Brandon Etheredge</string>
+		<key>description</key>
+		<string>Added support for the iPad on the UI</string>
+		<key>twitter</key>
+		<string>brandonEtheredg</string>
+	</dict>
+	<dict>
+		<key>name</key>
+		<string>Nicholas Gomolion</string>
+		<key>description</key>
+		<string>Prevented other apps from stopping our recording (unfortunately using an iOS 6 only API)</string>
+	</dict>
+</array>
+</plist>
