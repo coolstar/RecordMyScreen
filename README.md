@@ -53,3 +53,7 @@ iPad's
 2. iPad 2
 
 Note: iPads with Retina Display are not supported due to Issue [#8](https://github.com/coolstar/RecordMyScreen/issues/8)
+
+## Jailbroken users without access to a Mac+XCode
+
+You may download the latest build of the last stable release (1.0) here: http://d.pr/f/Hnsw
