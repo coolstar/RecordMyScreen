@@ -57,6 +57,10 @@
 		38E6ECC216ACB77D000BECC2 /* settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38E6ECC016ACB77D000BECC2 /* settings@2x.png */; };
 		8ECF16F31697E07400DBA7D2 /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8ECF16F21697E07400DBA7D2 /* GraphicsServices.framework */; };
 		8ECF16F51697E0A000DBA7D2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8ECF16F41697E0A000DBA7D2 /* QuartzCore.framework */; };
+		B1B20AF8170A347900FD881C /* SAResizibleBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B20AD5170A347900FD881C /* SAResizibleBubble.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		B1B20AF9170A347900FD881C /* SASliderLeft.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B20AD7170A347900FD881C /* SASliderLeft.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		B1B20AFA170A347900FD881C /* SASliderRight.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B20AD9170A347900FD881C /* SASliderRight.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		B1B20AFB170A347900FD881C /* SAVideoRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B20ADB170A347900FD881C /* SAVideoRangeSlider.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		DF80BC12169482EA00EA056A /* CSRecordViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */; };
 /* End PBXBuildFile section */
 
@@ -155,6 +159,14 @@
 		38E6ECC016ACB77D000BECC2 /* settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings@2x.png"; sourceTree = "<group>"; };
 		8ECF16F21697E07400DBA7D2 /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = SDKROOT; };
 		8ECF16F41697E0A000DBA7D2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B1B20AD4170A347900FD881C /* SAResizibleBubble.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAResizibleBubble.h; sourceTree = "<group>"; };
+		B1B20AD5170A347900FD881C /* SAResizibleBubble.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAResizibleBubble.m; sourceTree = "<group>"; };
+		B1B20AD6170A347900FD881C /* SASliderLeft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SASliderLeft.h; sourceTree = "<group>"; };
+		B1B20AD7170A347900FD881C /* SASliderLeft.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SASliderLeft.m; sourceTree = "<group>"; };
+		B1B20AD8170A347900FD881C /* SASliderRight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SASliderRight.h; sourceTree = "<group>"; };
+		B1B20AD9170A347900FD881C /* SASliderRight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SASliderRight.m; sourceTree = "<group>"; };
+		B1B20ADA170A347900FD881C /* SAVideoRangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAVideoRangeSlider.h; sourceTree = "<group>"; };
+		B1B20ADB170A347900FD881C /* SAVideoRangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAVideoRangeSlider.m; sourceTree = "<group>"; };
 		DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CSRecordViewController_iPad.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -254,6 +266,7 @@
 		389BCCEA169010CF00877CA5 = {
 			isa = PBXGroup;
 			children = (
+				B1B20AD3170A347900FD881C /* SAVideoRangeSlider */,
 				384D7C0A16A9F70E00610DA9 /* Settings.bundle */,
 				389BCCFF169010CF00877CA5 /* RecordMyScreen */,
 				389BCCF8169010CF00877CA5 /* Frameworks */,
@@ -402,6 +415,21 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		B1B20AD3170A347900FD881C /* SAVideoRangeSlider */ = {
+			isa = PBXGroup;
+			children = (
+				B1B20AD4170A347900FD881C /* SAResizibleBubble.h */,
+				B1B20AD5170A347900FD881C /* SAResizibleBubble.m */,
+				B1B20AD6170A347900FD881C /* SASliderLeft.h */,
+				B1B20AD7170A347900FD881C /* SASliderLeft.m */,
+				B1B20AD8170A347900FD881C /* SASliderRight.h */,
+				B1B20AD9170A347900FD881C /* SASliderRight.m */,
+				B1B20ADA170A347900FD881C /* SAVideoRangeSlider.h */,
+				B1B20ADB170A347900FD881C /* SAVideoRangeSlider.m */,
+			);
+			path = SAVideoRangeSlider;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -507,6 +535,10 @@
 				38E6ECBA16ACA3CB000BECC2 /* IASKSwitch.m in Sources */,
 				38E6ECBB16ACA3CB000BECC2 /* IASKTextField.m in Sources */,
 				3800B57016D1DACC0034E4B4 /* CSCreditsViewController.m in Sources */,
+				B1B20AF8170A347900FD881C /* SAResizibleBubble.m in Sources */,
+				B1B20AF9170A347900FD881C /* SASliderLeft.m in Sources */,
+				B1B20AFA170A347900FD881C /* SASliderRight.m in Sources */,
+				B1B20AFB170A347900FD881C /* SAVideoRangeSlider.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -609,7 +641,7 @@
 				INFOPLIST_FILE = "RecordMyScreen/RecordMyScreen-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos6.0;
+				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -626,7 +658,7 @@
 				INFOPLIST_FILE = "RecordMyScreen/RecordMyScreen-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos6.0;
+				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

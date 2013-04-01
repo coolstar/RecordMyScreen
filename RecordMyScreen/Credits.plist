@@ -40,5 +40,13 @@
 		<key>description</key>
 		<string>Prevented other apps from stopping our recording (unfortunately using an iOS 6 only API)</string>
 	</dict>
+	<dict>
+		<key>name</key>
+		<string>MPow</string>
+		<key>description</key>
+		<string>Add Video Editing Feature</string>
+		<key>twitter</key>
+		<string>ManzoPower</string>
+	</dict>
 </array>
 </plist>
