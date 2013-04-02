@@ -13,6 +13,7 @@ You may use the videos created from RecordMyScreen for commercial use.
 * John Coates (@punksomething) - Improved the framerate of the video captured, fixed the screen tearing, and made RecordMyScreen usable on <= A4
 * Brandon Etheredge (@brandonEtheredg) - Added support for the iPad on the UI
 * Nicholas Gomolion - Prevented other apps from stopping our recording (unfortunately using an iOS 6 only API)
+* Aditya KD (@caughtinflux) - Moved the recording stuff to a separate class. Makes it a lot easier for us to start on the tweak version :)
 
 ## Technical Specs
 
