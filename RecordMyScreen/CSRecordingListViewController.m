@@ -20,21 +20,31 @@
     if (self) {
         self.title = NSLocalizedString(@"Recordings", @"");
         self.tabBarItem = [[[UITabBarItem alloc] initWithTitle:self.title image:[UIImage imageNamed:@"list"] tag:0] autorelease];
-        self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Edit Video" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleEdit:)] autorelease];
+        self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Edit Video" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleEditVideo:)] autorelease];
+        self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEdit:)] autorelease];
         _folderItems = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/"] error:nil] mutableCopy];
         // Custom initialization
     }
     return self;
 }
-
 - (void)toggleEdit:(id)sender {
+    [self.tableView setEditing:!self.tableView.isEditing animated:YES];
+    self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:self.tableView.isEditing? UIBarButtonSystemItemDone : UIBarButtonSystemItemEdit target:self action:@selector(toggleEdit:)] autorelease];
+}
+
+
+- (void)toggleEditVideo:(id)sender {
     if (isEditing) {
-        [mySAVideoRangeSlider removeFromSuperview];
-        [ok removeFromSuperview];
-        [self.navigationItem.rightBarButtonItem setTitle:@"Edit Video"];
+        if (mySAVideoRangeSlider) {
+            [mySAVideoRangeSlider removeFromSuperview];
+        }
+        if (ok) {
+            [ok removeFromSuperview];
+        }
+        [self.navigationItem.leftBarButtonItem setTitle:@"Edit Video"];
 
     }else{
-        [self.navigationItem.rightBarButtonItem setTitle:@"Done"];
+        [self.navigationItem.leftBarButtonItem setTitle:@"Done"];
     }
     isEditing=!isEditing;
 }
@@ -256,6 +266,8 @@
                         [self.tableView reloadData];
                         [mySAVideoRangeSlider removeFromSuperview];
                         [ok removeFromSuperview];
+                        mySAVideoRangeSlider=nil;
+                        ok=nil;
                     });
                     
                     break;
