@@ -55,6 +55,7 @@
 		38E6ECBE16ACA3FE000BECC2 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38E6ECBC16ACA3F9000BECC2 /* MessageUI.framework */; };
 		38E6ECC116ACB77D000BECC2 /* settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 38E6ECBF16ACB77D000BECC2 /* settings.png */; };
 		38E6ECC216ACB77D000BECC2 /* settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38E6ECC016ACB77D000BECC2 /* settings@2x.png */; };
+		48DC7016170A7F4700DE3765 /* CSScreenRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 48DC7015170A7F4700DE3765 /* CSScreenRecorder.m */; };
 		8ECF16F31697E07400DBA7D2 /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8ECF16F21697E07400DBA7D2 /* GraphicsServices.framework */; };
 		8ECF16F51697E0A000DBA7D2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8ECF16F41697E0A000DBA7D2 /* QuartzCore.framework */; };
 		DF80BC12169482EA00EA056A /* CSRecordViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */; };
@@ -153,6 +154,8 @@
 		38E6ECBC16ACA3F9000BECC2 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		38E6ECBF16ACB77D000BECC2 /* settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settings.png; sourceTree = "<group>"; };
 		38E6ECC016ACB77D000BECC2 /* settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings@2x.png"; sourceTree = "<group>"; };
+		48DC7014170A7F4700DE3765 /* CSScreenRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSScreenRecorder.h; sourceTree = "<group>"; };
+		48DC7015170A7F4700DE3765 /* CSScreenRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSScreenRecorder.m; sourceTree = "<group>"; };
 		8ECF16F21697E07400DBA7D2 /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = SDKROOT; };
 		8ECF16F41697E0A000DBA7D2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CSRecordViewController_iPad.xib; sourceTree = "<group>"; };
@@ -289,6 +292,7 @@
 		389BCCFF169010CF00877CA5 /* RecordMyScreen */ = {
 			isa = PBXGroup;
 			children = (
+				48DC7017170A7F4B00DE3765 /* CSScreenRecorder */,
 				389BCD2A169010FB00877CA5 /* CSRecordViewController */,
 				382758E41690E0A7000D537C /* CSRecordingListController */,
 				3800B56C16D1DAAA0034E4B4 /* CSCreditsViewController */,
@@ -402,6 +406,15 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		48DC7017170A7F4B00DE3765 /* CSScreenRecorder */ = {
+			isa = PBXGroup;
+			children = (
+				48DC7014170A7F4700DE3765 /* CSScreenRecorder.h */,
+				48DC7015170A7F4700DE3765 /* CSScreenRecorder.m */,
+			);
+			name = CSScreenRecorder;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -507,6 +520,7 @@
 				38E6ECBA16ACA3CB000BECC2 /* IASKSwitch.m in Sources */,
 				38E6ECBB16ACA3CB000BECC2 /* IASKTextField.m in Sources */,
 				3800B57016D1DACC0034E4B4 /* CSCreditsViewController.m in Sources */,
+				48DC7016170A7F4700DE3765 /* CSScreenRecorder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -531,7 +545,8 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Dylan Laws (5PG53H8462)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Dylan Laws (5PG53H8462)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(SDK_DIR)/System/Library/PrivateFrameworks";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -558,6 +573,8 @@
 					"-framework",
 					IOKit,
 				);
+				PROVISIONING_PROFILE = "EDD98B71-2A9F-401F-9C81-D887C3AEAD06";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "EDD98B71-2A9F-401F-9C81-D887C3AEAD06";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -570,7 +587,8 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Dylan Laws (5PG53H8462)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Dylan Laws (5PG53H8462)";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SDK_DIR)/System/Library/PrivateFrameworks";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -591,6 +609,8 @@
 					"-framework",
 					IOKit,
 				);
+				PROVISIONING_PROFILE = "EDD98B71-2A9F-401F-9C81-D887C3AEAD06";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "EDD98B71-2A9F-401F-9C81-D887C3AEAD06";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -609,7 +629,7 @@
 				INFOPLIST_FILE = "RecordMyScreen/RecordMyScreen-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos6.0;
+				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -626,7 +646,7 @@
 				INFOPLIST_FILE = "RecordMyScreen/RecordMyScreen-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos6.0;
+				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
