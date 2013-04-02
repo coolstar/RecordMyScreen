@@ -52,8 +52,13 @@ iPad's
 
 1. iPad 1 (maybe, test please?)
 2. iPad 2
+3. iPad 3 (requires additional setup)
+4. iPad 4 (should work with same settings as iPad 3, but needs testing)
 
-Note: iPads with Retina Display are not supported due to Issue [#8](https://github.com/coolstar/RecordMyScreen/issues/8)
+Note: iPads with Retina Display have Issue [#8](https://github.com/coolstar/RecordMyScreen/issues/8)
+Note for Retina iPads:
+1. You MUST set Video size to 50% scale, as the video encoder doesn't work with the 2048x1536 screen res.
+2. There is a little tearing in the video on retina iPads. We will fix it once we can take a look at it.
 
 ## Jailbroken users without access to a Mac+XCode
 
