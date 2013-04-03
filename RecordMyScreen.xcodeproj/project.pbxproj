@@ -17,6 +17,7 @@
 		38114EE91693DAC900BE64B4 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38114EE41693D9D000BE64B4 /* icon@2x.png */; };
 		38114EEF1693E51C00BE64B4 /* icon~ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38114EEE1693E51B00BE64B4 /* icon~ipad@2x.png */; };
 		38114EF11693E52C00BE64B4 /* icon~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 38114EF01693E52B00BE64B4 /* icon~ipad.png */; };
+		3811D0BB170BE57300358090 /* CSScreenRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 3811D0B9170BE4DC00358090 /* CSScreenRecorder.m */; };
 		382758E21690DEAA000D537C /* video.png in Resources */ = {isa = PBXBuildFile; fileRef = 382758E01690DEAA000D537C /* video.png */; };
 		382758E31690DEAA000D537C /* video@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 382758E11690DEAA000D537C /* video@2x.png */; };
 		382758E71690E0EE000D537C /* CSRecordingListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 382758E61690E0EE000D537C /* CSRecordingListViewController.m */; };
@@ -55,9 +56,12 @@
 		38E6ECBE16ACA3FE000BECC2 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38E6ECBC16ACA3F9000BECC2 /* MessageUI.framework */; };
 		38E6ECC116ACB77D000BECC2 /* settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 38E6ECBF16ACB77D000BECC2 /* settings.png */; };
 		38E6ECC216ACB77D000BECC2 /* settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 38E6ECC016ACB77D000BECC2 /* settings@2x.png */; };
-		48DC7016170A7F4700DE3765 /* CSScreenRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 48DC7015170A7F4700DE3765 /* CSScreenRecorder.m */; };
 		8ECF16F31697E07400DBA7D2 /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8ECF16F21697E07400DBA7D2 /* GraphicsServices.framework */; };
 		8ECF16F51697E0A000DBA7D2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8ECF16F41697E0A000DBA7D2 /* QuartzCore.framework */; };
+		B1B20AF8170A347900FD881C /* SAResizibleBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B20AD5170A347900FD881C /* SAResizibleBubble.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		B1B20AF9170A347900FD881C /* SASliderLeft.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B20AD7170A347900FD881C /* SASliderLeft.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		B1B20AFA170A347900FD881C /* SASliderRight.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B20AD9170A347900FD881C /* SASliderRight.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		B1B20AFB170A347900FD881C /* SAVideoRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B20ADB170A347900FD881C /* SAVideoRangeSlider.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		DF80BC12169482EA00EA056A /* CSRecordViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */; };
 /* End PBXBuildFile section */
 
@@ -95,6 +99,8 @@
 		38114EE61693D9F200BE64B4 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../icon.png; sourceTree = "<group>"; };
 		38114EEE1693E51B00BE64B4 /* icon~ipad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon~ipad@2x.png"; sourceTree = SOURCE_ROOT; };
 		38114EF01693E52B00BE64B4 /* icon~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon~ipad.png"; sourceTree = SOURCE_ROOT; };
+		3811D0B8170BE4DC00358090 /* CSScreenRecorder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CSScreenRecorder.h; sourceTree = "<group>"; };
+		3811D0B9170BE4DC00358090 /* CSScreenRecorder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CSScreenRecorder.m; sourceTree = "<group>"; };
 		382758E01690DEAA000D537C /* video.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = video.png; sourceTree = "<group>"; };
 		382758E11690DEAA000D537C /* video@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "video@2x.png"; sourceTree = "<group>"; };
 		382758E51690E0EE000D537C /* CSRecordingListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRecordingListViewController.h; sourceTree = "<group>"; };
@@ -154,10 +160,16 @@
 		38E6ECBC16ACA3F9000BECC2 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		38E6ECBF16ACB77D000BECC2 /* settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settings.png; sourceTree = "<group>"; };
 		38E6ECC016ACB77D000BECC2 /* settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings@2x.png"; sourceTree = "<group>"; };
-		48DC7014170A7F4700DE3765 /* CSScreenRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSScreenRecorder.h; sourceTree = "<group>"; };
-		48DC7015170A7F4700DE3765 /* CSScreenRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSScreenRecorder.m; sourceTree = "<group>"; };
 		8ECF16F21697E07400DBA7D2 /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = SDKROOT; };
 		8ECF16F41697E0A000DBA7D2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B1B20AD4170A347900FD881C /* SAResizibleBubble.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAResizibleBubble.h; sourceTree = "<group>"; };
+		B1B20AD5170A347900FD881C /* SAResizibleBubble.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAResizibleBubble.m; sourceTree = "<group>"; };
+		B1B20AD6170A347900FD881C /* SASliderLeft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SASliderLeft.h; sourceTree = "<group>"; };
+		B1B20AD7170A347900FD881C /* SASliderLeft.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SASliderLeft.m; sourceTree = "<group>"; };
+		B1B20AD8170A347900FD881C /* SASliderRight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SASliderRight.h; sourceTree = "<group>"; };
+		B1B20AD9170A347900FD881C /* SASliderRight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SASliderRight.m; sourceTree = "<group>"; };
+		B1B20ADA170A347900FD881C /* SAVideoRangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAVideoRangeSlider.h; sourceTree = "<group>"; };
+		B1B20ADB170A347900FD881C /* SAVideoRangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAVideoRangeSlider.m; sourceTree = "<group>"; };
 		DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CSRecordViewController_iPad.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -245,6 +257,15 @@
 			path = Headers;
 			sourceTree = "<group>";
 		};
+		3811D0BA170BE4E000358090 /* CSScreenRecorder */ = {
+			isa = PBXGroup;
+			children = (
+				3811D0B8170BE4DC00358090 /* CSScreenRecorder.h */,
+				3811D0B9170BE4DC00358090 /* CSScreenRecorder.m */,
+			);
+			name = CSScreenRecorder;
+			sourceTree = "<group>";
+		};
 		382758E41690E0A7000D537C /* CSRecordingListController */ = {
 			isa = PBXGroup;
 			children = (
@@ -292,7 +313,6 @@
 		389BCCFF169010CF00877CA5 /* RecordMyScreen */ = {
 			isa = PBXGroup;
 			children = (
-				48DC7017170A7F4B00DE3765 /* CSScreenRecorder */,
 				389BCD2A169010FB00877CA5 /* CSRecordViewController */,
 				382758E41690E0A7000D537C /* CSRecordingListController */,
 				3800B56C16D1DAAA0034E4B4 /* CSCreditsViewController */,
@@ -306,6 +326,8 @@
 		389BCD00169010CF00877CA5 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				3811D0BA170BE4E000358090 /* CSScreenRecorder */,
+				B1B20AD3170A347900FD881C /* SAVideoRangeSlider */,
 				38E6EC8D16ACA3CB000BECC2 /* InAppSettingsKit */,
 				38114EC01692D88A00BE64B4 /* headers */,
 				382758F01690F307000D537C /* Default-568h@2x.png */,
@@ -406,13 +428,20 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		48DC7017170A7F4B00DE3765 /* CSScreenRecorder */ = {
+		B1B20AD3170A347900FD881C /* SAVideoRangeSlider */ = {
 			isa = PBXGroup;
 			children = (
-				48DC7014170A7F4700DE3765 /* CSScreenRecorder.h */,
-				48DC7015170A7F4700DE3765 /* CSScreenRecorder.m */,
+				B1B20AD4170A347900FD881C /* SAResizibleBubble.h */,
+				B1B20AD5170A347900FD881C /* SAResizibleBubble.m */,
+				B1B20AD6170A347900FD881C /* SASliderLeft.h */,
+				B1B20AD7170A347900FD881C /* SASliderLeft.m */,
+				B1B20AD8170A347900FD881C /* SASliderRight.h */,
+				B1B20AD9170A347900FD881C /* SASliderRight.m */,
+				B1B20ADA170A347900FD881C /* SAVideoRangeSlider.h */,
+				B1B20ADB170A347900FD881C /* SAVideoRangeSlider.m */,
 			);
-			name = CSScreenRecorder;
+			name = SAVideoRangeSlider;
+			path = ../SAVideoRangeSlider;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -520,7 +549,11 @@
 				38E6ECBA16ACA3CB000BECC2 /* IASKSwitch.m in Sources */,
 				38E6ECBB16ACA3CB000BECC2 /* IASKTextField.m in Sources */,
 				3800B57016D1DACC0034E4B4 /* CSCreditsViewController.m in Sources */,
-				48DC7016170A7F4700DE3765 /* CSScreenRecorder.m in Sources */,
+				B1B20AF8170A347900FD881C /* SAResizibleBubble.m in Sources */,
+				B1B20AF9170A347900FD881C /* SASliderLeft.m in Sources */,
+				B1B20AFA170A347900FD881C /* SASliderRight.m in Sources */,
+				3811D0BB170BE57300358090 /* CSScreenRecorder.m in Sources */,
+				B1B20AFB170A347900FD881C /* SAVideoRangeSlider.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -545,8 +578,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Dylan Laws (5PG53H8462)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Dylan Laws (5PG53H8462)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(SDK_DIR)/System/Library/PrivateFrameworks";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -573,8 +605,6 @@
 					"-framework",
 					IOKit,
 				);
-				PROVISIONING_PROFILE = "EDD98B71-2A9F-401F-9C81-D887C3AEAD06";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "EDD98B71-2A9F-401F-9C81-D887C3AEAD06";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -587,8 +617,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Dylan Laws (5PG53H8462)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Dylan Laws (5PG53H8462)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SDK_DIR)/System/Library/PrivateFrameworks";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -609,8 +638,6 @@
 					"-framework",
 					IOKit,
 				);
-				PROVISIONING_PROFILE = "EDD98B71-2A9F-401F-9C81-D887C3AEAD06";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "EDD98B71-2A9F-401F-9C81-D887C3AEAD06";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -620,6 +647,8 @@
 		389BCD28169010CF00877CA5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
@@ -629,6 +658,7 @@
 				INFOPLIST_FILE = "RecordMyScreen/RecordMyScreen-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
@@ -637,6 +667,8 @@
 		389BCD29169010CF00877CA5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
@@ -646,6 +678,7 @@
 				INFOPLIST_FILE = "RecordMyScreen/RecordMyScreen-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};

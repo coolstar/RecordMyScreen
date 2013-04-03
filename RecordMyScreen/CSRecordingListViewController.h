@@ -7,9 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MediaPlayer/MediaPlayer.h>
+#import "SAVideoRangeSlider.h"
 
-@interface CSRecordingListViewController : UITableViewController {
+
+@interface CSRecordingListViewController : UITableViewController<SAVideoRangeSliderDelegate> {
     NSMutableArray *_folderItems;
+    CGFloat startTime;
+    CGFloat stopTime;
+    BOOL isEditing;
+    int row;
+    SAVideoRangeSlider *mySAVideoRangeSlider;
+    UIButton *ok;
 }
 
 @end

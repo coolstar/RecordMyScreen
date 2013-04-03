@@ -8,7 +8,6 @@
 
 #import "CSRecordingListViewController.h"
 #import <MediaPlayer/MediaPlayer.h>
-
 @interface CSRecordingListViewController ()
 
 @end
@@ -21,16 +20,33 @@
     if (self) {
         self.title = NSLocalizedString(@"Recordings", @"");
         self.tabBarItem = [[[UITabBarItem alloc] initWithTitle:self.title image:[UIImage imageNamed:@"list"] tag:0] autorelease];
+        self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Edit Video" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleEditVideo:)] autorelease];
         self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEdit:)] autorelease];
         _folderItems = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/"] error:nil] mutableCopy];
         // Custom initialization
     }
     return self;
 }
-
 - (void)toggleEdit:(id)sender {
     [self.tableView setEditing:!self.tableView.isEditing animated:YES];
     self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:self.tableView.isEditing? UIBarButtonSystemItemDone : UIBarButtonSystemItemEdit target:self action:@selector(toggleEdit:)] autorelease];
+}
+
+
+- (void)toggleEditVideo:(id)sender {
+    if (isEditing) {
+        if (mySAVideoRangeSlider) {
+            [mySAVideoRangeSlider removeFromSuperview];
+        }
+        if (ok) {
+            [ok removeFromSuperview];
+        }
+        [self.navigationItem.leftBarButtonItem setTitle:@"Edit Video"];
+
+    }else{
+        [self.navigationItem.leftBarButtonItem setTitle:@"Done"];
+    }
+    isEditing=!isEditing;
 }
 
 - (void)viewDidLoad
@@ -167,17 +183,104 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
+    row=indexPath.row;
+    
     NSString *fileName = [_folderItems objectAtIndex:indexPath.row];
     NSString *fileDirectory = [@"Documents/" stringByAppendingString:fileName];
     
     NSURL *fileURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:fileDirectory]];
-    
+    // Navigation logic may go here. Create and push another view controller.
+    if (!isEditing) {
+
     MPMoviePlayerViewController *moviePlayerController = [[[MPMoviePlayerViewController alloc] initWithContentURL:fileURL] autorelease];
     [moviePlayerController.moviePlayer prepareToPlay];
      // ...
      // Pass the selected object to the new view controller.
     [self presentMoviePlayerViewControllerAnimated:moviePlayerController];
+    }else{
+        if (mySAVideoRangeSlider) {
+            [mySAVideoRangeSlider removeFromSuperview];
+        }
+    mySAVideoRangeSlider = [[SAVideoRangeSlider alloc] initWithFrame:CGRectMake(10, 100, self.view.frame.size.width-20, 50) videoUrl:fileURL ];
+    mySAVideoRangeSlider.bubleText.font = [UIFont systemFontOfSize:12];
+    [mySAVideoRangeSlider setPopoverBubbleSize:120 height:60];
+    mySAVideoRangeSlider.topBorder.backgroundColor = [UIColor colorWithRed: 0.996 green: 0.951 blue: 0.502 alpha: 1];
+    mySAVideoRangeSlider.bottomBorder.backgroundColor = [UIColor colorWithRed: 0.992 green: 0.902 blue: 0.004 alpha: 1];
+    
+
+    mySAVideoRangeSlider.delegate = self;
+    [self.view addSubview:mySAVideoRangeSlider];
+    ok=[UIButton buttonWithType:UIButtonTypeCustom];
+    ok.frame = CGRectMake((self.view.frame.size.width/2)-50, 170, 100, 30);
+        ok.backgroundColor=[UIColor greenColor];
+        [ok setTitleColor:[UIColor blackColor] forState:0];
+        [ok setTitle:@"Save" forState:0];
+        [ok.layer setCornerRadius:8.0f];
+
+    [ok addTarget:self action:@selector(pressed:) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:ok];
+    }
+}
+
+- (void)pressed:(id)sender{
+    AVAssetExportSession *exportSession;
+    // Navigation logic may go here. Create and push another view controller.
+    NSString *fileName = [_folderItems objectAtIndex:row];
+    NSString *fileDirectory = [@"Documents/" stringByAppendingString:fileName];
+    
+    NSURL *fileURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:fileDirectory]];
+    
+    AVAsset *anAsset = [[[AVURLAsset alloc] initWithURL:fileURL options:nil] autorelease];
+    NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:anAsset];
+    if ([compatiblePresets containsObject:AVAssetExportPresetMediumQuality]) {
+        
+        exportSession = [[AVAssetExportSession alloc]
+                              initWithAsset:anAsset presetName:AVAssetExportPresetPassthrough];
+        // Implementation continues.
+        NSDate *today = [NSDate date];
+        NSString *fileDirectory = [@"Documents/" stringByAppendingString:[NSString stringWithFormat:@"%@-mod.mp4",today]];
+        NSURL *furl = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:fileDirectory]];
+        
+        exportSession.outputURL = furl;
+        exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+        
+        CMTime start = CMTimeMakeWithSeconds(startTime, anAsset.duration.timescale);
+        CMTime duration = CMTimeMakeWithSeconds(stopTime-startTime, anAsset.duration.timescale);
+        CMTimeRange range = CMTimeRangeMake(start, duration);
+        exportSession.timeRange = range;
+        
+        [exportSession exportAsynchronouslyWithCompletionHandler:^{
+            
+            switch ([exportSession status]) {
+                case AVAssetExportSessionStatusFailed:
+                    NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
+                    break;
+                case AVAssetExportSessionStatusCancelled:
+                    NSLog(@"Export canceled");
+                    break;
+                default:
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        _folderItems = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/"] error:nil] mutableCopy];
+                        [self.tableView reloadData];
+                        [mySAVideoRangeSlider removeFromSuperview];
+                        [ok removeFromSuperview];
+                        mySAVideoRangeSlider=nil;
+                        ok=nil;
+                    });
+                    
+                    break;
+            }
+        }];
+        
+    }
+    
+}
+
+- (void)videoRange:(SAVideoRangeSlider *)videoRange didChangeLeftPosition:(CGFloat)leftPosition rightPosition:(CGFloat)rightPosition
+{
+    startTime = leftPosition;
+    stopTime = rightPosition;
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
