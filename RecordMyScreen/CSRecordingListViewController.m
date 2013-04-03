@@ -183,7 +183,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    row=indexPath.row;
+    row = indexPath.row;
     
     NSString *fileName = [_folderItems objectAtIndex:indexPath.row];
     NSString *fileDirectory = [@"Documents/" stringByAppendingString:fileName];
@@ -192,33 +192,33 @@
     // Navigation logic may go here. Create and push another view controller.
     if (!isEditing) {
 
-    MPMoviePlayerViewController *moviePlayerController = [[[MPMoviePlayerViewController alloc] initWithContentURL:fileURL] autorelease];
-    [moviePlayerController.moviePlayer prepareToPlay];
-     // ...
-     // Pass the selected object to the new view controller.
-    [self presentMoviePlayerViewControllerAnimated:moviePlayerController];
-    }else{
+        MPMoviePlayerViewController *moviePlayerController = [[[MPMoviePlayerViewController alloc] initWithContentURL:fileURL] autorelease];
+        [moviePlayerController.moviePlayer prepareToPlay];
+        // ...
+        // Pass the selected object to the new view controller.
+        [self presentMoviePlayerViewControllerAnimated:moviePlayerController];
+    } else {
         if (mySAVideoRangeSlider) {
             [mySAVideoRangeSlider removeFromSuperview];
         }
-    mySAVideoRangeSlider = [[SAVideoRangeSlider alloc] initWithFrame:CGRectMake(10, 100, self.view.frame.size.width-20, 50) videoUrl:fileURL ];
-    mySAVideoRangeSlider.bubleText.font = [UIFont systemFontOfSize:12];
-    [mySAVideoRangeSlider setPopoverBubbleSize:120 height:60];
-    mySAVideoRangeSlider.topBorder.backgroundColor = [UIColor colorWithRed: 0.996 green: 0.951 blue: 0.502 alpha: 1];
-    mySAVideoRangeSlider.bottomBorder.backgroundColor = [UIColor colorWithRed: 0.992 green: 0.902 blue: 0.004 alpha: 1];
+        mySAVideoRangeSlider = [[SAVideoRangeSlider alloc] initWithFrame:CGRectMake(10, 100, self.view.frame.size.width-20, 50) videoUrl:fileURL ];
+        mySAVideoRangeSlider.bubleText.font = [UIFont systemFontOfSize:12];
+        [mySAVideoRangeSlider setPopoverBubbleSize:120 height:60];
+        mySAVideoRangeSlider.topBorder.backgroundColor = [UIColor colorWithRed:0.996 green:0.951 blue:0.502 alpha:1];
+        mySAVideoRangeSlider.bottomBorder.backgroundColor = [UIColor colorWithRed:0.992 green:0.902 blue:0.004 alpha:1];
     
 
-    mySAVideoRangeSlider.delegate = self;
-    [self.view addSubview:mySAVideoRangeSlider];
-    ok=[UIButton buttonWithType:UIButtonTypeCustom];
-    ok.frame = CGRectMake((self.view.frame.size.width/2)-50, 170, 100, 30);
-        ok.backgroundColor=[UIColor greenColor];
+        mySAVideoRangeSlider.delegate = self;
+        [self.view addSubview:mySAVideoRangeSlider];
+        ok = [UIButton buttonWithType:UIButtonTypeCustom];
+        [ok setFrame:CGRectMake((self.view.frame.size.width/2)-50, 170, 100, 30)];
+        [ok setBackgroundColor:[UIColor greenColor]];
         [ok setTitleColor:[UIColor blackColor] forState:0];
         [ok setTitle:@"Save" forState:0];
         [ok.layer setCornerRadius:8.0f];
 
-    [ok addTarget:self action:@selector(pressed:) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:ok];
+        [ok addTarget:self action:@selector(pressed:) forControlEvents:UIControlEventTouchDown];
+        [self.view addSubview:ok];
     }
 }
 
