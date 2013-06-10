@@ -22,7 +22,7 @@
         self.tabBarItem = [[[UITabBarItem alloc] initWithTitle:self.title image:[UIImage imageNamed:@"list"] tag:0] autorelease];
         self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Edit Video" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleEditVideo:)] autorelease];
         self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEdit:)] autorelease];
-        _folderItems = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/"] error:nil] mutableCopy];
+        _folderItems = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[self inDocumentsDirectory:@""] error:nil] mutableCopy];
         // Custom initialization
     }
     return self;
@@ -100,9 +100,7 @@
     cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     
     NSString *fileName = [_folderItems objectAtIndex:indexPath.row];
-    NSString *fileDirectory = [@"Documents/" stringByAppendingString:fileName];
-    
-    NSString *filePath = [NSHomeDirectory() stringByAppendingPathComponent:fileDirectory];
+    NSString *filePath = [self inDocumentsDirectory:fileName];
     
     unsigned long long size = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil] fileSize];
     cell.detailTextLabel.text = [self humanReadableStringFromBytes:size];
@@ -143,9 +141,9 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source and filesystem
         NSString *fileName = [_folderItems objectAtIndex:indexPath.row];
-        NSString *fileDirectory = [@"Documents/" stringByAppendingString:fileName];
+        NSString *filePath = [self inDocumentsDirectory:fileName];
         
-        NSURL *fileURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:fileDirectory]];
+        NSURL *fileURL = [NSURL fileURLWithPath:filePath];
         [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
         [_folderItems removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -173,9 +171,9 @@
 
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     NSString *fileName = [_folderItems objectAtIndex:indexPath.row];
-    NSString *fileDirectory = [@"Documents/" stringByAppendingString:fileName];
+    NSString *filePath = [self inDocumentsDirectory:fileName];
     
-    NSURL *fileURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:fileDirectory]];
+    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
     
     UIDocumentInteractionController *interactionController = [[UIDocumentInteractionController interactionControllerWithURL:fileURL] retain];
     [interactionController presentOptionsMenuFromRect:[tableView cellForRowAtIndexPath:indexPath].frame inView:self.view animated:YES];
@@ -186,9 +184,9 @@
     row = indexPath.row;
     
     NSString *fileName = [_folderItems objectAtIndex:indexPath.row];
-    NSString *fileDirectory = [@"Documents/" stringByAppendingString:fileName];
+    NSString *filePath = [self inDocumentsDirectory:fileName];
     
-    NSURL *fileURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:fileDirectory]];
+    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
     // Navigation logic may go here. Create and push another view controller.
     if (!isEditing) {
 
@@ -226,9 +224,9 @@
     AVAssetExportSession *exportSession;
     // Navigation logic may go here. Create and push another view controller.
     NSString *fileName = [_folderItems objectAtIndex:row];
-    NSString *fileDirectory = [@"Documents/" stringByAppendingString:fileName];
+    NSString *filePath = [self inDocumentsDirectory:fileName];
     
-    NSURL *fileURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:fileDirectory]];
+    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
     
     AVAsset *anAsset = [[[AVURLAsset alloc] initWithURL:fileURL options:nil] autorelease];
     NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:anAsset];
@@ -238,8 +236,8 @@
                               initWithAsset:anAsset presetName:AVAssetExportPresetPassthrough];
         // Implementation continues.
         NSDate *today = [NSDate date];
-        NSString *fileDirectory = [@"Documents/" stringByAppendingString:[NSString stringWithFormat:@"%@-mod.mp4",today]];
-        NSURL *furl = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:fileDirectory]];
+        NSString *filePath = [self inDocumentsDirectory:[NSString stringWithFormat:@"%@-mod.mp4",today]];
+        NSURL *furl = [NSURL fileURLWithPath:filePath];
         
         exportSession.outputURL = furl;
         exportSession.outputFileType = AVFileTypeQuickTimeMovie;
@@ -260,7 +258,7 @@
                     break;
                 default:
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        _folderItems = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/"] error:nil] mutableCopy];
+                        _folderItems = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[self inDocumentsDirectory:@""] error:nil] mutableCopy];
                         [self.tableView reloadData];
                         [mySAVideoRangeSlider removeFromSuperview];
                         [ok removeFromSuperview];
@@ -285,13 +283,21 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [_folderItems release];
-    _folderItems = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/"] error:nil] mutableCopy];
+    _folderItems = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[self inDocumentsDirectory:@""] error:nil] mutableCopy];
     [self.tableView reloadData];
 }
 
 - (void)dealloc {
     [_folderItems release];
     [super dealloc];
+}
+
+#pragma mark - NSFileManager Methods
+
+- (NSString *)inDocumentsDirectory:(NSString *)path {
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSString *documentsDirectory = [paths objectAtIndex:0];
+	return [documentsDirectory stringByAppendingPathComponent:path];
 }
 
 @end

@@ -93,22 +93,22 @@
     _record.enabled = NO;
     
     // Remove the old video
-    [[NSFileManager defaultManager] removeItemAtPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"] error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:[self inDocumentsDirectory:@"video.mp4"] error:nil];
     
-    NSString *videoPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/video.mp4"];
+    NSString *videoPath = [self inDocumentsDirectory:@"video.mp4"];
     if (![[[NSUserDefaults standardUserDefaults] objectForKey:@"record"] boolValue]) {
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"MM:dd:yyyy h:mm:ss a"];
         NSString *date = [dateFormatter stringFromDate:[NSDate date]];
-        NSString *outName = [NSString stringWithFormat:@"Documents/%@.mp4",date];
-        videoPath = [NSHomeDirectory() stringByAppendingPathComponent:outName];
+        NSString *outName = [NSString stringWithFormat:@"%@.mp4", date];
+        videoPath = [self inDocumentsDirectory:outName];
         [dateFormatter release];
     }
     
     // Set the number of audio channels
     NSNumber *audioChannels = [[NSUserDefaults standardUserDefaults] objectForKey:@"channels"];
     NSNumber *sampleRate = [[NSUserDefaults standardUserDefaults] objectForKey:@"samplerate"];
-    NSString *audioPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/audio.caf"];
+    NSString *audioPath = [self inDocumentsDirectory:@"audio.caf"];
     
     _screenRecorder.videoOutPath = videoPath;
     _screenRecorder.audioOutPath = audioPath;
@@ -175,6 +175,14 @@
 - (void)screenRecorder:(CSScreenRecorder *)recorder audioSessionSetupFailedWithError:(NSError *)error
 {
     
+}
+
+#pragma mark - NSFileManager Methods
+
+- (NSString *)inDocumentsDirectory:(NSString *)path {
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSString *documentsDirectory = [paths objectAtIndex:0];
+	return [documentsDirectory stringByAppendingPathComponent:path];
 }
 
 @end
