@@ -11,4 +11,5 @@
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
+	#define degreesToRadians(degrees) ((degrees) / 180.0 * M_PI)
 #endif

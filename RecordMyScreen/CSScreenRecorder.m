@@ -118,25 +118,12 @@ void CARenderServerRenderDisplay(kern_return_t a, CFStringRef b, IOSurfaceRef su
 
 - (void)stopRecordingScreen
 {
-    // Set the flag to stop recording
+	// Set the flag to stop recording
     _isRecording = NO;
     
     // Invalidate the recording time
     [_recordingTimer invalidate];
     _recordingTimer = nil;
-    
-    
-    // Stop the audio recording
-    [_audioRecorder stop];
-    [_audioRecorder release];
-    _audioRecorder = nil;
-    
-    [_recordStartDate release];
-    _recordStartDate = nil;
-    
-    if ([self.delegate respondsToSelector:@selector(screenRecorderDidStopRecording:)]) {
-        [self.delegate screenRecorderDidStopRecording:self];
-    }
 }
 
 - (void)_setupAudio
@@ -157,12 +144,12 @@ void CARenderServerRenderDisplay(kern_return_t a, CFStringRef b, IOSurfaceRef su
     }
     
     // Set the number of audio channels, using defaults if necessary.
-    NSNumber *audioChannels = (self.numberOfAudioChannels ? self.numberOfAudioChannels : [NSNumber numberWithInt:2]);
-    NSNumber *sampleRate    = (self.audioSampleRate       ? self.audioSampleRate       : [NSNumber numberWithFloat:44100.f]);
+    NSNumber *audioChannels = (self.numberOfAudioChannels ? self.numberOfAudioChannels : @2);
+    NSNumber *sampleRate    = (self.audioSampleRate       ? self.audioSampleRate       : @44100.f);
     
     NSDictionary *audioSettings = @{
-                                    AVNumberOfChannelsKey : (audioChannels ? audioChannels : ([NSNumber numberWithInt:2])),
-                                    AVSampleRateKey       : (sampleRate    ? sampleRate    : ([NSNumber numberWithFloat:44100.0f]))
+                                    AVNumberOfChannelsKey : (audioChannels ? audioChannels : @2),
+                                    AVSampleRateKey       : (sampleRate    ? sampleRate    : @44100.0f)
                                     };
     
     
@@ -432,10 +419,7 @@ void CARenderServerRenderDisplay(kern_return_t a, CFStringRef b, IOSurfaceRef su
     // Add the output settings
     _videoWriterInput = [[AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
                                                             outputSettings:outputSettings] retain];
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"vidorientation"]) {
-        float radians = [[[NSUserDefaults standardUserDefaults] objectForKey:@"vidorientation"] floatValue];
-        _videoWriterInput.transform = CGAffineTransformMakeRotation(radians);
-    }
+	
     // Check if AVAssetWriter will take an AVAssetWriterInput
     NSParameterAssert(_videoWriterInput);
     NSParameterAssert([_videoWriter canAddInput:_videoWriterInput]);
@@ -464,13 +448,12 @@ void CARenderServerRenderDisplay(kern_return_t a, CFStringRef b, IOSurfaceRef su
     [_videoWriter startSessionAtSourceTime:kCMTimeZero];
     
     NSParameterAssert(_pixelBufferAdaptor.pixelBufferPool != NULL);
-    
 }
 
 
 - (void)_finishEncoding
 {
-    // Tell the AVAssetWriterInput were done appending buffers
+	// Tell the AVAssetWriterInput were done appending buffers
     [_videoWriterInput markAsFinished];
     
     // Tell the AVAssetWriter to finish and close the file
@@ -483,6 +466,94 @@ void CARenderServerRenderDisplay(kern_return_t a, CFStringRef b, IOSurfaceRef su
     _videoWriter = nil;
     _videoWriterInput = nil;
     _pixelBufferAdaptor = nil;
+	
+	// Stop the audio recording
+    [_audioRecorder stop];
+    [_audioRecorder release];
+    _audioRecorder = nil;
+    
+    [_recordStartDate release];
+    _recordStartDate = nil;
+	
+	[self addAudioTrackToRecording];
+}
+
+- (void)addAudioTrackToRecording {
+	double degrees = 0.0;
+	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+	if ([prefs objectForKey:@"vidorientation"])
+		degrees = [[prefs objectForKey:@"vidorientation"] doubleValue];
+	
+	NSString *videoPath = self.videoOutPath;
+	NSString *audioPath = self.audioOutPath;
+	
+	NSURL *videoURL = [NSURL fileURLWithPath:videoPath];
+	NSURL *audioURL = [NSURL fileURLWithPath:audioPath];
+	
+	AVURLAsset *videoAsset = [[AVURLAsset alloc] initWithURL:videoURL options:nil];
+	AVURLAsset *audioAsset = [[AVURLAsset alloc] initWithURL:audioURL options:nil];
+	
+	AVAssetTrack *assetVideoTrack = nil;
+	AVAssetTrack *assetAudioTrack = nil;
+	
+	if ([[NSFileManager defaultManager] fileExistsAtPath:videoPath]) {
+		NSArray *assetArray = [videoAsset tracksWithMediaType:AVMediaTypeVideo];
+		if ([assetArray count] > 0)
+			assetVideoTrack = assetArray[0];
+	}
+	
+	if ([[NSFileManager defaultManager] fileExistsAtPath:audioPath] && [prefs boolForKey:@"recordaudio"]) {
+		NSArray *assetArray = [audioAsset tracksWithMediaType:AVMediaTypeAudio];
+		if ([assetArray count] > 0)
+			assetAudioTrack = assetArray[0];
+	}
+	
+	AVMutableComposition *mixComposition = [AVMutableComposition composition];
+	
+	if (assetVideoTrack != nil) {
+		AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+		[compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:assetVideoTrack atTime:kCMTimeZero error:nil];
+		[compositionVideoTrack setPreferredTransform:CGAffineTransformMakeRotation(degreesToRadians(degrees))];
+	}
+	
+	if (assetAudioTrack != nil) {
+		AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+		[compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, audioAsset.duration) ofTrack:assetAudioTrack atTime:kCMTimeZero error:nil];
+	}
+
+	NSString *exportPath = [videoPath substringWithRange:NSMakeRange(0, videoPath.length - 4)];
+	exportPath = [NSString stringWithFormat:@"%@.mov", exportPath];
+	NSURL *exportURL = [NSURL fileURLWithPath:exportPath];
+	
+	AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetPassthrough];
+	[exportSession setOutputFileType:AVFileTypeQuickTimeMovie];
+	[exportSession setOutputURL:exportURL];
+	[exportSession setShouldOptimizeForNetworkUse:NO];
+	
+	[exportSession exportAsynchronouslyWithCompletionHandler:^(void){
+		switch (exportSession.status) {
+			case AVAssetExportSessionStatusCompleted:{
+				[[NSFileManager defaultManager] removeItemAtPath:videoPath error:nil];
+				[[NSFileManager defaultManager] removeItemAtPath:audioPath error:nil];
+				break;
+			}
+				
+			case AVAssetExportSessionStatusFailed:
+				NSLog(@"Failed: %@", exportSession.error);
+				break;
+				
+			case AVAssetExportSessionStatusCancelled:
+				NSLog(@"Canceled: %@", exportSession.error);
+				break;
+				
+			default:
+				break;
+		}
+		
+		if ([self.delegate respondsToSelector:@selector(screenRecorderDidStopRecording:)]) {
+			[self.delegate screenRecorderDidStopRecording:self];
+		}
+	}];
 }
 
 

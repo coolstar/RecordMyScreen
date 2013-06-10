@@ -36,9 +36,11 @@
 	</dict>
 	<dict>
 		<key>name</key>
-		<string>Nicholas Gomolion</string>
+		<string>Nicolas Gomollon</string>
 		<key>description</key>
 		<string>Prevented other apps from stopping our recording (unfortunately using an iOS 6 only API)</string>
+		<key>twitter</key>
+		<string>gomollon</string>
 	</dict>
 	<dict>
 		<key>name</key>
