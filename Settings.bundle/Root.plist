@@ -2,32 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>StringsTable</key>
+	<string>Root</string>
 	<key>PreferenceSpecifiers</key>
 	<array>
-		<dict>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-			<key>Title</key>
-			<string>Recording Settings</string>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Title</key>
-			<string>Record</string>
-			<key>Key</key>
-			<string>record</string>
-			<key>DefaultValue</key>
-			<integer>0</integer>
-			<key>Titles</key>
-			<array>
-				<string>Screen Only</string>
-			</array>
-			<key>Values</key>
-			<array>
-				<integer>0</integer>
-			</array>
-		</dict>
 		<dict>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
@@ -131,7 +109,5 @@
 			</array>
 		</dict>
 	</array>
-	<key>StringsTable</key>
-	<string>Root</string>
 </dict>
 </plist>
