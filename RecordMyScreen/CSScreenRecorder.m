@@ -433,8 +433,8 @@ void CARenderServerRenderDisplay(kern_return_t a, CFStringRef b, IOSurfaceRef su
     _videoWriterInput = [[AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
                                                             outputSettings:outputSettings] retain];
     if ([[NSUserDefaults standardUserDefaults] objectForKey:@"vidorientation"]) {
-        float radians = [[[NSUserDefaults standardUserDefaults] objectForKey:@"vidorientation"] floatValue];
-        _videoWriterInput.transform = CGAffineTransformMakeRotation(radians);
+        float degrees = [[[NSUserDefaults standardUserDefaults] objectForKey:@"vidorientation"] floatValue];
+        _videoWriterInput.transform = CGAffineTransformMakeRotation(degreesToRadians(degrees));
     }
     // Check if AVAssetWriter will take an AVAssetWriterInput
     NSParameterAssert(_videoWriterInput);

@@ -51,9 +51,9 @@
 			<key>Values</key>
 			<array>
 				<integer>0</integer>
-				<real>1.57079633</real>
-				<string>4.71238898</string>
-				<string>3.14159265</string>
+				<integer>90</integer>
+				<integer>270</integer>
+				<integer>180</integer>
 			</array>
 		</dict>
 		<dict>
