@@ -72,6 +72,7 @@
     
     [self.view addSubview:_record];
     [self.view addSubview:_stop];
+	
     // Do any additional setup after loading the view from its nib.
 }
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -95,15 +96,12 @@
     // Remove the old video
     [[NSFileManager defaultManager] removeItemAtPath:[self inDocumentsDirectory:@"video.mp4"] error:nil];
     
-    NSString *videoPath = [self inDocumentsDirectory:@"video.mp4"];
-    if (![[[NSUserDefaults standardUserDefaults] objectForKey:@"record"] boolValue]) {
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"MM:dd:yyyy h:mm:ss a"];
-        NSString *date = [dateFormatter stringFromDate:[NSDate date]];
-        NSString *outName = [NSString stringWithFormat:@"%@.mp4", date];
-        videoPath = [self inDocumentsDirectory:outName];
-        [dateFormatter release];
-    }
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateFormat:@"MM:dd:yyyy h:mm:ss a"];
+	NSString *date = [dateFormatter stringFromDate:[NSDate date]];
+	NSString *outName = [NSString stringWithFormat:@"%@.mp4", date];
+	NSString *videoPath = [self inDocumentsDirectory:outName];
+	[dateFormatter release];
     
     // Set the number of audio channels
     NSNumber *audioChannels = [[NSUserDefaults standardUserDefaults] objectForKey:@"channels"];
