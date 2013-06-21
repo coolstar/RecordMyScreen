@@ -9,7 +9,7 @@
 #ifndef _IOSURFACE_H
 #define _IOSURFACE_H 1
 
-#include <IOSurfaceBase.h>
-#include <IOSurfaceAPI.h>
+#include <IOSurface/IOSurfaceBase.h>
+#include <IOSurface/IOSurfaceAPI.h>
 
 #endif

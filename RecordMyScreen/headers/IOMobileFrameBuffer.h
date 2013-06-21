@@ -16,6 +16,10 @@
 #include <stdio.h> // For mprotect
 #include <sys/mman.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define kIOMobileFramebufferError 0xE0000000
 
 typedef kern_return_t IOMobileFramebufferReturn;
@@ -79,3 +83,7 @@ IOMobileFramebufferSwapWait(
 /*
  IOMobileFramebufferGetDisplaySize(io_connect_t connect, CGSize *t);
  */
+
+#ifdef __cplusplus
+}
+#endif

@@ -10,7 +10,7 @@
 #define _IOSURFACE_API_H 1
 
 #include <IOKit/IOKitLib.h>
-#include <IOSurfaceBase.h>
+#include <IOSurface/IOSurfaceBase.h>
 
 __BEGIN_DECLS
 

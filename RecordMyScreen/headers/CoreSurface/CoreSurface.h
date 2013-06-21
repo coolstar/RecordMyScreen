@@ -25,7 +25,7 @@ unsigned int CoreSurfaceBufferGetPixelFormatType(CoreSurfaceBufferRef surface);
 unsigned int CoreSurfaceBufferGetID(CoreSurfaceBufferRef surface);
 unsigned int CoreSurfaceBufferGetPlaneCount(CoreSurfaceBufferRef surface);
 
-int CoreSurfaceBufferLock(CoreSurfaceBufferRef surface);
+int CoreSurfaceBufferLock(CoreSurfaceBufferRef surface, int unknown);
 int CoreSurfaceBufferUnlock(CoreSurfaceBufferRef surface);
 int CoreSurfaceBufferWrapClientMemory(CoreSurfaceBufferRef surface);
 void *CoreSurfaceBufferGetBaseAddress(CoreSurfaceBufferRef surface);
