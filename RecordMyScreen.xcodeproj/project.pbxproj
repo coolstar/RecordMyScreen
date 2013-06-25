@@ -90,9 +90,6 @@
 		38114ED21692D88A00BE64B4 /* OSMessageNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSMessageNotification.h; sourceTree = "<group>"; };
 		38114ED31692D88A00BE64B4 /* IOMobileFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOMobileFrameBuffer.h; sourceTree = "<group>"; };
 		38114ED51692DA6900BE64B4 /* CoreSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreSurface.h; sourceTree = "<group>"; };
-		38114ED81692E8B000BE64B4 /* IOSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurface.h; sourceTree = "<group>"; };
-		38114ED91692E8B000BE64B4 /* IOSurfaceAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurfaceAPI.h; sourceTree = "<group>"; };
-		38114EDA1692E8B000BE64B4 /* IOSurfaceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurfaceBase.h; sourceTree = "<group>"; };
 		38114EDB1692F82E00BE64B4 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		38114EE01693D99800BE64B4 /* lens@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lens@2x.png"; sourceTree = "<group>"; };
 		38114EE41693D9D000BE64B4 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon@2x.png"; path = "../icon@2x.png"; sourceTree = "<group>"; };
@@ -171,6 +168,9 @@
 		B1B20ADA170A347900FD881C /* SAVideoRangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAVideoRangeSlider.h; sourceTree = "<group>"; };
 		B1B20ADB170A347900FD881C /* SAVideoRangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAVideoRangeSlider.m; sourceTree = "<group>"; };
 		DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CSRecordViewController_iPad.xib; sourceTree = "<group>"; };
+		F10E265017797B2A0040CB66 /* IOSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurface.h; sourceTree = "<group>"; };
+		F10E265117797B2A0040CB66 /* IOSurfaceAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurfaceAPI.h; sourceTree = "<group>"; };
+		F10E265217797B2A0040CB66 /* IOSurfaceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurfaceBase.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,7 +208,7 @@
 			children = (
 				38114ED41692DA6900BE64B4 /* CoreSurface */,
 				38114EC11692D88A00BE64B4 /* IOKit */,
-				38114ED71692E8B000BE64B4 /* IOSurface */,
+				F10E264F17797B2A0040CB66 /* IOSurface */,
 				38114ED31692D88A00BE64B4 /* IOMobileFrameBuffer.h */,
 			);
 			path = headers;
@@ -244,17 +244,6 @@
 				38114ED51692DA6900BE64B4 /* CoreSurface.h */,
 			);
 			path = CoreSurface;
-			sourceTree = "<group>";
-		};
-		38114ED71692E8B000BE64B4 /* IOSurface */ = {
-			isa = PBXGroup;
-			children = (
-				38114ED81692E8B000BE64B4 /* IOSurface.h */,
-				38114ED91692E8B000BE64B4 /* IOSurfaceAPI.h */,
-				38114EDA1692E8B000BE64B4 /* IOSurfaceBase.h */,
-			);
-			name = IOSurface;
-			path = Headers;
 			sourceTree = "<group>";
 		};
 		3811D0BA170BE4E000358090 /* CSScreenRecorder */ = {
@@ -442,6 +431,16 @@
 			);
 			name = SAVideoRangeSlider;
 			path = ../SAVideoRangeSlider;
+			sourceTree = "<group>";
+		};
+		F10E264F17797B2A0040CB66 /* IOSurface */ = {
+			isa = PBXGroup;
+			children = (
+				F10E265017797B2A0040CB66 /* IOSurface.h */,
+				F10E265117797B2A0040CB66 /* IOSurfaceAPI.h */,
+				F10E265217797B2A0040CB66 /* IOSurfaceBase.h */,
+			);
+			path = IOSurface;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
