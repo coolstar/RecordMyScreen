@@ -24,11 +24,13 @@
 			<key>Titles</key>
 			<array>
 				<string>Native</string>
+				<string>75%</string>
 				<string>Half</string>
 			</array>
 			<key>Values</key>
 			<array>
 				<integer>1</integer>
+				<string>2</string>
 				<integer>0</integer>
 			</array>
 		</dict>

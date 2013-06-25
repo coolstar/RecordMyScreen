@@ -454,6 +454,7 @@
 				389BCCF1169010CF00877CA5 /* Sources */,
 				389BCCF2169010CF00877CA5 /* Frameworks */,
 				389BCCF3169010CF00877CA5 /* Resources */,
+				F10E264C177978D90040CB66 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -524,6 +525,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F10E264C177978D90040CB66 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#XCode Deploy over SSH\n#To use you must have OpenSSH installed on your iOS device (jailbreak required)\n#You must also have SSH keys setup for passwordless authentication.\n#comment the next line to use deploy-over-SSH\nexit 0\n#comment the next line if you don't want to fake-codesign\nldid -S \"$BUILT_PRODUCTS_DIR/$FULL_PRODUCT_NAME/$PRODUCT_NAME\"\n#replace 10.232.239.122 with your device's IP\nssh root@10.232.239.122 'rm -R /Applications/RecordMyScreen.app'\nscp -r \"$BUILT_PRODUCTS_DIR/$FULL_PRODUCT_NAME\" root@10.232.239.122:/Applications/\nssh mobile@10.232.239.122 'uicache'";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		389BCCF1169010CF00877CA5 /* Sources */ = {
