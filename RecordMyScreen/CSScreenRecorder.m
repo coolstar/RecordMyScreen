@@ -536,18 +536,26 @@ void CARenderServerRenderDisplay(kern_return_t a, CFStringRef b, IOSurfaceRef su
 			case AVAssetExportSessionStatusCompleted:{
 				[[NSFileManager defaultManager] removeItemAtPath:videoPath error:nil];
 				[[NSFileManager defaultManager] removeItemAtPath:audioPath error:nil];
+                [videoAsset release];
+                [audioAsset release];
 				break;
 			}
 				
 			case AVAssetExportSessionStatusFailed:
+                [videoAsset release];
+                [audioAsset release];
 				NSLog(@"Failed: %@", exportSession.error);
 				break;
 				
 			case AVAssetExportSessionStatusCancelled:
+                [videoAsset release];
+                [audioAsset release];
 				NSLog(@"Canceled: %@", exportSession.error);
 				break;
 				
 			default:
+                [videoAsset release];
+                [audioAsset release];
 				break;
 		}
 		
