@@ -18,9 +18,9 @@
 @end
 
 @implementation CSRecordViewController
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)init
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super init];
     if (self) {
         _screenRecorder = [[CSScreenRecorder alloc] init];
         _screenRecorder.delegate = self;
@@ -35,6 +35,34 @@
     _screenRecorder = nil;
     
     [super dealloc];
+}
+
+- (void)loadView {
+    self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].applicationFrame.size.width, [UIScreen mainScreen].applicationFrame.size.height)];
+    UINavigationBar *navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 43)];
+    navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    [navigationBar pushNavigationItem:[[[UINavigationItem alloc] initWithTitle:NSLocalizedString(@"Record", @"")] autorelease] animated:NO];
+    [navigationBar setBarStyle:UIBarStyleBlack];
+    [self.view addSubview:[navigationBar autorelease]];
+    
+    _recordbar = [[UIImageView alloc] initWithFrame:CGRectMake(0, 43, self.view.frame.size.width, isiPad?158:124)];
+    [_recordbar setImage:[UIImage imageNamed:@"side_top"]];
+    _recordbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
+    [self.view addSubview:[_recordbar autorelease]];
+    
+    _statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 52, 150, 39)];
+    [_statusLabel setText:NSLocalizedString(@"Ready", @"")];
+    _statusLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+    [_statusLabel setBackgroundColor:[UIColor clearColor]];
+    [_statusLabel setTextColor:[UIColor whiteColor]];
+    [_statusLabel setTextAlignment:UITextAlignmentCenter];
+    [self.view addSubview:[_statusLabel autorelease]];
+    
+    UIImageView *lens = [[UIImageView alloc] initWithFrame:CGRectMake(0, _recordbar.frame.size.height + _recordbar.frame.origin.y, self.view.frame.size.width, self.view.frame.size.height - (_recordbar.frame.size.height + _recordbar.frame.origin.y))];
+    lens.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    lens.contentMode = UIViewContentModeCenter;
+    [lens setImage:[UIImage imageNamed:@"lens"]];
+    [self.view addSubview:[lens autorelease]];
 }
 
 #pragma mark - UI

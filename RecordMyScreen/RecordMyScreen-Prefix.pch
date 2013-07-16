@@ -13,3 +13,5 @@
     #import <Foundation/Foundation.h>
 	#define degreesToRadians(degrees) ((degrees) / 180.0 * M_PI)
 #endif
+
+#define isiPad [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad

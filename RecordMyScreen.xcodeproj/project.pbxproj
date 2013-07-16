@@ -38,7 +38,6 @@
 		389BCD06169010CF00877CA5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 389BCD05169010CF00877CA5 /* main.m */; };
 		389BCD0A169010CF00877CA5 /* CSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 389BCD09169010CF00877CA5 /* CSAppDelegate.m */; };
 		389BCD2E1690113900877CA5 /* CSRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 389BCD2C1690113900877CA5 /* CSRecordViewController.m */; };
-		389BCD2F1690113900877CA5 /* CSRecordViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 389BCD2D1690113900877CA5 /* CSRecordViewController.xib */; };
 		38E6ECAE16ACA3CB000BECC2 /* IASKAppSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38E6EC9016ACA3CB000BECC2 /* IASKAppSettingsViewController.m */; };
 		38E6ECAF16ACA3CB000BECC2 /* IASKAppSettingsWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38E6EC9216ACA3CB000BECC2 /* IASKAppSettingsWebViewController.m */; };
 		38E6ECB016ACA3CB000BECC2 /* IASKSpecifierValuesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38E6EC9416ACA3CB000BECC2 /* IASKSpecifierValuesViewController.m */; };
@@ -62,7 +61,6 @@
 		B1B20AF9170A347900FD881C /* SASliderLeft.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B20AD7170A347900FD881C /* SASliderLeft.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		B1B20AFA170A347900FD881C /* SASliderRight.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B20AD9170A347900FD881C /* SASliderRight.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		B1B20AFB170A347900FD881C /* SAVideoRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = B1B20ADB170A347900FD881C /* SAVideoRangeSlider.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		DF80BC12169482EA00EA056A /* CSRecordViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -124,7 +122,6 @@
 		389BCD09169010CF00877CA5 /* CSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CSAppDelegate.m; sourceTree = "<group>"; };
 		389BCD2B1690113900877CA5 /* CSRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRecordViewController.h; sourceTree = "<group>"; };
 		389BCD2C1690113900877CA5 /* CSRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRecordViewController.m; sourceTree = "<group>"; };
-		389BCD2D1690113900877CA5 /* CSRecordViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CSRecordViewController.xib; sourceTree = "<group>"; };
 		38E6EC8F16ACA3CB000BECC2 /* IASKAppSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsViewController.h; sourceTree = "<group>"; };
 		38E6EC9016ACA3CB000BECC2 /* IASKAppSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKAppSettingsViewController.m; sourceTree = "<group>"; };
 		38E6EC9116ACA3CB000BECC2 /* IASKAppSettingsWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsWebViewController.h; sourceTree = "<group>"; };
@@ -167,7 +164,6 @@
 		B1B20AD9170A347900FD881C /* SASliderRight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SASliderRight.m; sourceTree = "<group>"; };
 		B1B20ADA170A347900FD881C /* SAVideoRangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAVideoRangeSlider.h; sourceTree = "<group>"; };
 		B1B20ADB170A347900FD881C /* SAVideoRangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAVideoRangeSlider.m; sourceTree = "<group>"; };
-		DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CSRecordViewController_iPad.xib; sourceTree = "<group>"; };
 		F10E265017797B2A0040CB66 /* IOSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurface.h; sourceTree = "<group>"; };
 		F10E265117797B2A0040CB66 /* IOSurfaceAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurfaceAPI.h; sourceTree = "<group>"; };
 		F10E265217797B2A0040CB66 /* IOSurfaceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurfaceBase.h; sourceTree = "<group>"; };
@@ -350,8 +346,6 @@
 			children = (
 				389BCD2B1690113900877CA5 /* CSRecordViewController.h */,
 				389BCD2C1690113900877CA5 /* CSRecordViewController.m */,
-				389BCD2D1690113900877CA5 /* CSRecordViewController.xib */,
-				DF80BC11169482EA00EA056A /* CSRecordViewController_iPad.xib */,
 			);
 			name = CSRecordViewController;
 			sourceTree = "<group>";
@@ -499,7 +493,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				389BCD04169010CF00877CA5 /* InfoPlist.strings in Resources */,
-				389BCD2F1690113900877CA5 /* CSRecordViewController.xib in Resources */,
 				382758E21690DEAA000D537C /* video.png in Resources */,
 				382758E31690DEAA000D537C /* video@2x.png in Resources */,
 				382758EA1690E745000D537C /* side_top.png in Resources */,
@@ -511,7 +504,6 @@
 				38114EE91693DAC900BE64B4 /* icon@2x.png in Resources */,
 				38114EEF1693E51C00BE64B4 /* icon~ipad@2x.png in Resources */,
 				38114EF11693E52C00BE64B4 /* icon~ipad.png in Resources */,
-				DF80BC12169482EA00EA056A /* CSRecordViewController_iPad.xib in Resources */,
 				3844BB9B16982DAF00F326C2 /* list.png in Resources */,
 				3844BB9C16982DAF00F326C2 /* list@2x.png in Resources */,
 				384D7C0B16A9F70E00610DA9 /* Settings.bundle in Resources */,
