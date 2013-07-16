@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <MediaPlayer/MediaPlayer.h>
-#import "SAVideoRangeSlider.h"
+#import <SAVideoRangeSlider.h>
 
 
 @interface CSRecordingListViewController : UITableViewController<SAVideoRangeSliderDelegate> {

@@ -663,12 +663,17 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RecordMyScreen/RecordMyScreen-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"RecordMyScreen/headers/**",
+					"SAVideoRangeSlider/**",
+				);
 				INFOPLIST_FILE = "RecordMyScreen/RecordMyScreen-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
+				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -684,12 +689,17 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RecordMyScreen/RecordMyScreen-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"RecordMyScreen/headers/**",
+					"SAVideoRangeSlider/**",
+				);
 				INFOPLIST_FILE = "RecordMyScreen/RecordMyScreen-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
+				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -1,0 +1,9 @@
+Package: org.coolstar.recordmyscreenapp
+Name: recordmyscreenapp
+Depends: 
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: An awesome application!
+Maintainer: CoolStar
+Author: CoolStar
+Section: Utilities
