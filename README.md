@@ -60,6 +60,6 @@ Note for Retina iPads:
 1. You MUST set Video size to 50% scale, as the video encoder doesn't work with the 2048x1536 screen res.
 2. There is a little tearing in the video on retina iPads. We will fix it once we can take a look at it.
 
-## Jailbroken users without access to a Mac+XCode
+## Jailbroken users without access to a working iOS toolchain
 
 You may download the latest build of the last stable release (1.0) here: http://d.pr/f/Hnsw
